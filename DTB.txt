@@ -1,0 +1,84 @@
+-- Tạo database
+CREATE DATABASE FoodOrderingDB;
+GO
+
+USE FoodOrderingDB;
+GO
+
+-- Bảng Users
+CREATE TABLE Users (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(100) NOT NULL UNIQUE,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    Role NVARCHAR(20) NOT NULL CHECK (Role IN ('User', 'Admin'))
+);
+GO
+
+-- Bảng Categories
+CREATE TABLE Categories (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL
+);
+GO
+
+-- Bảng Foods
+CREATE TABLE Foods (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(MAX),
+    Price DECIMAL(18,2) NOT NULL CHECK (Price >= 0),
+    ImageUrl NVARCHAR(255),
+    CategoryId INT NOT NULL,
+    FOREIGN KEY (CategoryId) REFERENCES Categories(Id) ON DELETE CASCADE
+);
+GO
+
+-- Bảng Promotions
+CREATE TABLE Promotions (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Code NVARCHAR(50) NOT NULL UNIQUE,
+    Description NVARCHAR(255),
+    DiscountPercent INT CHECK (DiscountPercent BETWEEN 0 AND 100),
+    StartDate DATETIME NOT NULL,
+    EndDate DATETIME NOT NULL
+);
+GO
+
+-- Bảng Orders
+CREATE TABLE Orders (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT NOT NULL,
+    OrderDate DATETIME DEFAULT GETDATE(),
+    TotalAmount DECIMAL(18,2) NOT NULL CHECK (TotalAmount >= 0),
+    Status NVARCHAR(50) NOT NULL CHECK (Status IN ('Pending', 'Processing', 'Delivered', 'Cancelled')),
+    PromotionId INT NULL,
+    FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE,
+    FOREIGN KEY (PromotionId) REFERENCES Promotions(Id)
+);
+GO
+
+-- Bảng OrderDetails
+CREATE TABLE OrderDetails (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    OrderId INT NOT NULL,
+    FoodId INT NOT NULL,
+    Quantity INT NOT NULL CHECK (Quantity > 0),
+    UnitPrice DECIMAL(18,2) NOT NULL CHECK (UnitPrice >= 0),
+    FOREIGN KEY (OrderId) REFERENCES Orders(Id) ON DELETE CASCADE,
+    FOREIGN KEY (FoodId) REFERENCES Foods(Id)
+);
+GO
+
+-- Bảng CartItems
+CREATE TABLE CartItems (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT NOT NULL,
+    FoodId INT NOT NULL,
+    Quantity INT NOT NULL CHECK (Quantity > 0),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    CONSTRAINT UQ_CartItems_User_Food UNIQUE (UserId, FoodId),
+    FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE,
+    FOREIGN KEY (FoodId) REFERENCES Foods(Id) ON DELETE CASCADE
+);
+GO

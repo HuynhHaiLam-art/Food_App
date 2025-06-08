@@ -1,0 +1,538 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Thêm dòng này
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
+import '../models/user_update.dart';
+import '../models/user.dart';
+
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  Future<void> _editProfile(BuildContext context, User currentUser) async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final nameController = TextEditingController(text: currentUser.name);
+    final oldPassController = TextEditingController();
+    final newPassController = TextEditingController();
+    final confirmPassController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    final result = await showDialog<bool>(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.7),
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        String? localErrorMessage;
+        bool isLoading = false;
+
+        return StatefulBuilder(
+          builder: (context, setStateDialog) => Center(
+            child: SingleChildScrollView(
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.09),
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircleAvatar(
+                          radius: 32,
+                          backgroundColor: Color(0xFF7C5CFC),
+                          child: Icon(Icons.person, size: 36, color: Colors.white),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Chỉnh sửa thông tin',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        TextFormField(
+                          controller: nameController,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.10),
+                            labelText: 'Tên mới',
+                            labelStyle: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            prefixIcon: const Icon(Icons.person, color: Colors.white54),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: const BorderSide(color: Colors.white, width: 1.5),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                          ),
+                          validator: (value) =>
+                              value == null || value.trim().isEmpty ? 'Vui lòng nhập tên' : null,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: oldPassController,
+                          obscureText: true,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.10),
+                            labelText: 'Mật khẩu cũ (bỏ qua nếu chỉ đổi tên)',
+                            labelStyle: GoogleFonts.poppins(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            prefixIcon: const Icon(Icons.lock_outline, color: Colors.white54),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: const BorderSide(color: Colors.white, width: 1.5),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          controller: newPassController,
+                          obscureText: true,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.10),
+                            labelText: 'Mật khẩu mới',
+                            labelStyle: GoogleFonts.poppins(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            prefixIcon: const Icon(Icons.lock_reset, color: Colors.white54),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: const BorderSide(color: Colors.white, width: 1.5),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                          ),
+                          validator: (value) {
+                            if (oldPassController.text.isNotEmpty && (value == null || value.length < 6)) {
+                              return 'Mật khẩu mới tối thiểu 6 ký tự';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          controller: confirmPassController,
+                          obscureText: true,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.10),
+                            labelText: 'Nhập lại mật khẩu mới',
+                            labelStyle: GoogleFonts.poppins(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            prefixIcon: const Icon(Icons.lock, color: Colors.white54),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(18),
+                              borderSide: const BorderSide(color: Colors.white, width: 1.5),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                          ),
+                          validator: (value) {
+                            if (oldPassController.text.isNotEmpty && (value == null || value.isEmpty)) {
+                              return 'Vui lòng nhập lại mật khẩu mới';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 28),
+                        if (localErrorMessage?.isNotEmpty == true)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: Text(
+                              localErrorMessage ?? '',
+                              style: GoogleFonts.poppins(
+                                color: Colors.redAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: isLoading ? null : () => Navigator.pop(dialogContext, false),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.white54),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                ),
+                                child: Text(
+                                  'Hủy',
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: isLoading
+                                    ? null
+                                    : () async {
+                                        if (formKey.currentState!.validate()) {
+                                          if (oldPassController.text.isNotEmpty &&
+                                              newPassController.text != confirmPassController.text) {
+                                            setStateDialog(() {
+                                              localErrorMessage = 'Mật khẩu không khớp';
+                                            });
+                                            return;
+                                          }
+
+                                          setStateDialog(() {
+                                            isLoading = true;
+                                            localErrorMessage = null;
+                                          });
+
+                                          final userUpdateData = UserUpdate(
+                                            name: nameController.text.trim(),
+                                            email: currentUser.email,
+                                            role: currentUser.role,
+                                          );
+
+                                          final success = await authProvider.updateUserProfile(
+                                            userUpdateData,
+                                            oldPassword: oldPassController.text.isNotEmpty ? oldPassController.text : null,
+                                            newPassword: newPassController.text.isNotEmpty ? newPassController.text : null,
+                                          );
+
+                                          if (success) {
+                                            if (dialogContext.mounted) Navigator.pop(dialogContext, true);
+                                          } else {
+                                            setStateDialog(() {
+                                              isLoading = false;
+                                              localErrorMessage = authProvider.lastErrorMessage ?? 'Cập nhật thất bại!';
+                                            });
+                                          }
+                                        }
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    side: const BorderSide(color: Colors.white, width: 1.5),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                ),
+                                child: isLoading
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                      )
+                                    : Text(
+                                        'Lưu',
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (result == true && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Cập nhật thông tin thành công!',
+            style: GoogleFonts.poppins(),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    final currentUser = authProvider.currentUser;
+
+    if (currentUser == null) {
+      return Scaffold(
+        backgroundColor: Colors.black.withOpacity(0.8),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Vui lòng đăng nhập để xem thông tin.', style: TextStyle(color: Colors.white)),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Điều hướng đến màn hình đăng nhập
+                },
+                child: const Text('Đăng nhập'),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Image.asset(
+            'assets/images/background.jpg',
+            fit: BoxFit.cover,
+          ),
+        ),
+        Positioned.fill(
+          child: Container(
+            color: Colors.black.withOpacity(0.4),
+          ),
+        ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: const Text('Thông tin cá nhân'),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 16,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                          border: Border.all(color: Colors.white, width: 3),
+                        ),
+                        child: const CircleAvatar(
+                          radius: 48,
+                          backgroundColor: Color(0xFF7C5CFC),
+                          child: Icon(Icons.person, size: 48, color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        currentUser.name ?? 'N/A',
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        currentUser.email ?? 'N/A',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white70,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 32),
+                _ProfileButton(
+                  icon: Icons.edit,
+                  label: 'Chỉnh sửa thông tin',
+                  onPressed: () => _editProfile(context, currentUser),
+                ),
+                const SizedBox(height: 18),
+                _ProfileButton(
+                  icon: Icons.logout,
+                  label: 'Đăng xuất',
+                  onPressed: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (dialogContext) => AlertDialog(
+                        backgroundColor: Colors.grey[900],
+                        title: const Text('Xác nhận đăng xuất', style: TextStyle(color: Colors.white)),
+                        content: const Text('Bạn có chắc chắn muốn đăng xuất không?', style: TextStyle(color: Colors.white70)),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(dialogContext, false),
+                            child: const Text('Hủy', style: TextStyle(color: Colors.white)),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(dialogContext, true);
+                            },
+                            child: const Text('Đăng xuất', style: TextStyle(color: Colors.red)),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirm == true && mounted) {
+                      await authProvider.logout();
+                      if (mounted) Navigator.of(context).popUntil((route) => route.isFirst);
+                    }
+                  },
+                  color: Colors.red,
+                  border: false,
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Lịch sử đơn hàng',
+                  style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: 3,
+                  separatorBuilder: (context, index) => const Divider(color: Colors.white24),
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      leading: CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Colors.orange,
+                        child: const Icon(Icons.receipt_long, size: 28, color: Colors.white),
+                      ),
+                      title: Text(
+                        'Đơn hàng #${12345 - index}',
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        'Ngày: ${DateTime.now().subtract(Duration(days: index * 3)).toLocal().toString().split(' ')[0]} - Trạng thái: Đã giao',
+                        style: const TextStyle(color: Colors.white70, fontSize: 12),
+                      ),
+                      trailing: Text(
+                        '${(5 - index) * 75000} VNĐ',
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Xem chi tiết đơn hàng #${12345 - index} (chưa implement)')),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+  final Color? color;
+  final bool border;
+
+  const _ProfileButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    this.color,
+    this.border = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        icon: Icon(icon, color: Colors.white),
+        label: Text(
+          label,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color ?? Colors.white.withOpacity(0.08),
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: border
+                ? const BorderSide(color: Colors.white, width: 1.5)
+                : BorderSide.none,
+          ),
+          elevation: 0,
+        ),
+      ),
+    );
+  }
+}
