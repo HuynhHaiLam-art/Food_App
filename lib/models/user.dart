@@ -1,10 +1,8 @@
-
 class User {
   final int? id;
   final String? name;
   final String? email;
   final String? role;
-  // Bạn có thể thêm các trường khác mà API trả về, ví dụ:
   // final DateTime? createdAt;
   // final DateTime? updatedAt;
   // final String? avatarUrl;
@@ -33,13 +31,13 @@ class User {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['email'] = email;
-    data['role'] = role;
-    // data['createdAt'] = createdAt?.toIso8601String();
-    // data['updatedAt'] = updatedAt?.toIso8601String();
-    // data['avatarUrl'] = avatarUrl;
+    if (id != null) data['id'] = id;
+    if (name != null) data['name'] = name;
+    if (email != null) data['email'] = email;
+    if (role != null) data['role'] = role;
+    // if (createdAt != null) data['createdAt'] = createdAt?.toIso8601String();
+    // if (updatedAt != null) data['updatedAt'] = updatedAt?.toIso8601String();
+    // if (avatarUrl != null) data['avatarUrl'] = avatarUrl;
     return data;
   }
 

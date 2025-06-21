@@ -26,9 +26,8 @@ class UserApiService {
     return headers;
   }
 
-  // Hàm đăng ký người dùng mới
+  /// Đăng ký người dùng mới
   Future<Map<String, dynamic>> register(RegisterDTO dto) async {
-    // Endpoint đăng ký: POST /api/User (chính là _baseUrl)
     final url = Uri.parse(_baseUrl);
     try {
       final response = await http
@@ -44,22 +43,17 @@ class UserApiService {
 
       final responseBody = jsonDecode(response.body);
 
-      if (response.statusCode == 200 || response.statusCode == 201) { // API trả về 201 CreatedAtAction
+      if (response.statusCode == 200 || response.statusCode == 201) {
         if (responseBody is Map<String, dynamic>) {
-          // API đăng ký (PostUser) trả về UserDTO (chứa id, name, email, role)
           if (responseBody.containsKey('id') && responseBody.containsKey('email')) {
-             // Trả về thông tin user để có thể dùng ngay nếu cần, hoặc chỉ message
              return {'user': responseBody, 'message': 'Đăng ký thành công.'};
           }
-          // Nếu API chỉ trả về message (ít khả năng với CreatedAtAction)
           if (responseBody.containsKey('message')) {
              return {'message': responseBody['message']};
           }
         }
-        // Fallback nếu responseBody không như mong đợi nhưng status là success
         return {'message': 'Đăng ký thành công. Vui lòng đăng nhập.'};
       } else {
-        // API trả về BadRequest với object { "message": "Email đã tồn tại." }
         throw Exception(responseBody['message'] ?? 'Đăng ký thất bại (mã: ${response.statusCode}).');
       }
     } on SocketException {
@@ -77,9 +71,8 @@ class UserApiService {
     }
   }
 
-  // Hàm đăng nhập người dùng
+  /// Đăng nhập người dùng
   Future<Map<String, dynamic>> login(LoginDTO dto) async {
-    // Endpoint đăng nhập: POST /api/User/login
     final url = Uri.parse('$_baseUrl/login');
     try {
       final response = await http
@@ -95,25 +88,15 @@ class UserApiService {
       final responseBody = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        // API login trả về LoginResponseDTO { Token, ExpiresIn, UserDTO }
         if (responseBody is Map<String, dynamic> &&
-            responseBody.containsKey('token') && // Kiểm tra có token
-            (responseBody.containsKey('user') && responseBody['user'] is Map<String,dynamic> && (responseBody['user'] as Map<String,dynamic>).containsKey('id')) // Kiểm tra có user object và user.id
+            responseBody.containsKey('token') &&
+            (responseBody.containsKey('user') && responseBody['user'] is Map<String,dynamic> && (responseBody['user'] as Map<String,dynamic>).containsKey('id'))
             ) {
-          // Không cần phải tự tạo userMap nữa nếu API trả về đúng cấu trúc LoginResponseDTO
-          // final userMap = {
-          //   'id': responseBody['id'], // Nếu user data nằm phẳng (không khuyến khích nếu đã có user object)
-          //   'name': responseBody['name'],
-          //   'email': responseBody['email'],
-          //   'role': responseBody['role'],
-          // };
-          // responseBody['user'] = userMap; // Chỉ làm nếu API không trả về user object lồng nhau
           return responseBody;
         } else {
           throw Exception('Phản hồi đăng nhập không chứa đủ thông tin token hoặc người dùng hợp lệ.');
         }
       } else {
-        // API trả về 401 Unauthorized với object { "message": "Email không tồn tại!" } hoặc { "message": "Sai mật khẩu!" }
         throw Exception(responseBody['message'] ?? 'Đăng nhập thất bại (mã: ${response.statusCode}).');
       }
     } on SocketException {
@@ -131,7 +114,7 @@ class UserApiService {
     }
   }
 
-  // Hàm cập nhật thông tin người dùng
+  /// Cập nhật thông tin người dùng
   Future<bool> updateUserProfile(
     int userId,
     UserUpdate userUpdateData, {
@@ -139,33 +122,22 @@ class UserApiService {
     String? newPassword,
     required String token,
   }) async {
-    // Endpoint cập nhật user: PUT /api/User/{id}
     final url = Uri.parse('$_baseUrl/$userId');
     print('UserApiService: Cập nhật profile cho userId: $userId, token: $token');
     try {
       Map<String, dynamic> requestBody = userUpdateData.toJson();
 
-      // API (PutUser) yêu cầu OldPassword nếu NewPassword được cung cấp.
-      // Logic này nên được xử lý ở tầng gọi (UI/AuthProvider) để đảm bảo oldPassword được gửi kèm.
-      if (newPassword != null) { // Nếu có mật khẩu mới
+      if (newPassword != null) {
         if (oldPassword == null) {
-          // API sẽ từ chối nếu oldPassword là null và newPassword có giá trị.
-          // Có thể ném lỗi ở đây hoặc để API xử lý.
           print('UserApiService: Cảnh báo - NewPassword được cung cấp nhưng OldPassword là null. API có thể từ chối.');
-          // throw ArgumentError('Cần cung cấp mật khẩu cũ để đặt mật khẩu mới.');
         }
-        requestBody['oldPassword'] = oldPassword; // Gửi cả hai nếu newPassword có
+        requestBody['oldPassword'] = oldPassword;
         requestBody['newPassword'] = newPassword;
       }
-      // Xóa bỏ điều kiện phức tạp không cần thiết:
-      // } else if (newPassword != null && oldPassword == null && userUpdateData.toJson().isEmpty) {
-      //    print('UserApiService: Đang cố gắng đặt mật khẩu mới mà không có mật khẩu cũ và không có thông tin khác thay đổi.');
-      //    requestBody['newPassword'] = newPassword;
-      // }
 
       if (requestBody.isEmpty) {
         print('UserApiService: Không có dữ liệu để cập nhật.');
-        return true; // Không có gì thay đổi, coi như thành công
+        return true;
       }
       
       print('UserApiService: Request body cập nhật: ${json.encode(requestBody)}');
@@ -181,12 +153,9 @@ class UserApiService {
       print('Trạng thái cập nhật profile: ${response.statusCode}');
       print('Nội dung phản hồi cập nhật profile: ${response.body}');
 
-      if (response.statusCode == 200 || response.statusCode == 204) { // 204 No Content là thành công
+      if (response.statusCode == 200 || response.statusCode == 204) {
         return true;
       } else {
-        // API có thể trả về 400 BadRequest với { "message": "..." }
-        // hoặc 401 Unauthorized nếu token không hợp lệ (dù ít khả năng nếu đã qua AuthProvider)
-        // hoặc 404 Not Found nếu user ID không tồn tại
         final responseBody = response.body.isNotEmpty ? jsonDecode(response.body) : {};
         throw Exception(responseBody['message'] ?? 'Cập nhật thông tin thất bại (mã: ${response.statusCode}). Phản hồi: ${response.body}');
       }
@@ -205,11 +174,8 @@ class UserApiService {
     }
   }
 
-  // Hàm lấy thông tin chi tiết của người dùng hiện tại (đã đăng nhập)
+  /// Lấy thông tin chi tiết của người dùng hiện tại (đã đăng nhập)
   Future<User> getCurrentUserDetails(String token) async {
-    // QUAN TRỌNG: Endpoint này (`/api/User/me`) cần phải tồn tại ở backend.
-    // UserController.cs hiện tại của bạn không có endpoint này.
-    // Bạn cần thêm [HttpGet("me")] [Authorize] vào UserController.cs.
     final url = Uri.parse('$_baseUrl/me');
     print('UserApiService: Lấy thông tin người dùng hiện tại, token: $token');
     try {
@@ -223,12 +189,11 @@ class UserApiService {
       if (response.statusCode == 200) {
          final responseBody = jsonDecode(response.body);
          if (responseBody is Map<String, dynamic>) {
-            return User.fromJson(responseBody); // API nên trả về UserDTO
+            return User.fromJson(responseBody);
          } else {
             throw Exception('Dữ liệu người dùng trả về không hợp lệ.');
          }
       } else {
-        // API có thể trả về 401 Unauthorized nếu token không hợp lệ, hoặc 404 nếu /me không tồn tại
         final responseBody = response.body.isNotEmpty ? jsonDecode(response.body) : {};
         throw Exception(responseBody['message'] ?? 'Lỗi lấy thông tin người dùng (mã: ${response.statusCode}). Phản hồi: ${response.body}');
       }

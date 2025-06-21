@@ -1,19 +1,22 @@
-import 'package:intl/intl.dart'; // Thêm thư viện intl để định dạng số tốt hơn
+import 'package:intl/intl.dart'; // Thư viện định dạng số, ngày tháng
 
-// Để sử dụng NumberFormat, bạn cần thêm intl vào pubspec.yaml:
-// dependencies:
-//   flutter:
-//     sdk: flutter
-//   intl: ^0.18.0 # Hoặc phiên bản mới nhất
-
+/// Định dạng số thành tiền tệ Việt Nam, ví dụ: 1.000.000 VNĐ
 String formatCurrency(num? value, {String locale = 'vi_VN', String symbol = ' VNĐ'}) {
   if (value == null) return '0$symbol';
-  
-  // Sử dụng NumberFormat để định dạng số theo chuẩn locale
-  // Điều này giúp xử lý dấu phân cách hàng nghìn và thập phân đúng chuẩn hơn
   final formatter = NumberFormat.currency(locale: locale, symbol: '', decimalDigits: 0);
   return '${formatter.format(value)}$symbol';
 }
 
+/// Định dạng ngày theo chuẩn Việt Nam, ví dụ: 10/06/2025
+String formatDate(DateTime? date, {String pattern = 'dd/MM/yyyy'}) {
+  if (date == null) return '';
+  return DateFormat(pattern).format(date);
+}
+
+/// Định dạng giờ phút, ví dụ: 14:30
+String formatTime(DateTime? date, {String pattern = 'HH:mm'}) {
+  if (date == null) return '';
+  return DateFormat(pattern).format(date);
+}
+
 // Bạn có thể thêm các hàm formatter khác ở đây nếu cần
-// Ví dụ: formatDate, formatTime, v.v.

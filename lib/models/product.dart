@@ -1,9 +1,9 @@
- // Cần thiết cho việc so sánh bằng jsonEncode nếu có list/map phức tạp
+// Cần thiết cho việc so sánh bằng jsonEncode nếu có list/map phức tạp
 class Product {
   final int? id;
   final String? name;
   final String? description;
-  final int? price; // Giữ là int nếu bạn muốn giá là số nguyên (ví dụ: đơn vị VNĐ)
+  final int? price; // Đơn vị VNĐ, giữ là int nếu không dùng lẻ
   final String? imageUrl;
   final int? categoryId;
   final String? categoryName;
@@ -19,13 +19,11 @@ class Product {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
-    num? priceValue = json['price'] as num?; // Đọc giá trị dưới dạng num?
-
+    num? priceValue = json['price'] as num?;
     return Product(
       id: json['id'] as int?,
       name: json['name'] as String?,
       description: json['description'] as String?,
-      // Chuyển đổi priceValue sang int? một cách an toàn
       price: priceValue?.toInt(),
       imageUrl: json['imageUrl'] as String?,
       categoryId: json['categoryId'] as int?,
@@ -35,13 +33,13 @@ class Product {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['description'] = description;
-    data['price'] = price;
-    data['imageUrl'] = imageUrl;
-    data['categoryId'] = categoryId;
-    data['categoryName'] = categoryName;
+    if (id != null) data['id'] = id;
+    if (name != null) data['name'] = name;
+    if (description != null) data['description'] = description;
+    if (price != null) data['price'] = price;
+    if (imageUrl != null) data['imageUrl'] = imageUrl;
+    if (categoryId != null) data['categoryId'] = categoryId;
+    if (categoryName != null) data['categoryName'] = categoryName;
     return data;
   }
 

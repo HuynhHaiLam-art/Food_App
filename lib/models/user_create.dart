@@ -1,36 +1,38 @@
+import 'dart:convert';
 
 class UserCreate {
   final String name;
   final String email;
   final String password;
-  final String role; // Role có thể được chỉ định, mặc định là 'user'
+  final String role; // Mặc định là 'user'
 
   UserCreate({
     required this.name,
     required this.email,
     required this.password,
-    this.role = 'user', // Giá trị mặc định nếu không được cung cấp
+    this.role = 'user',
   });
 
   factory UserCreate.fromJson(Map<String, dynamic> json) {
-    // Constructor fromJson thường ít dùng cho DTO gửi đi,
-    // nhưng nếu có, nó nên xử lý các giá trị null một cách an toàn.
     return UserCreate(
-      name: json['name'] as String? ?? '', // Xử lý null tiềm ẩn từ API/JSON
-      email: json['email'] as String? ?? '', // Xử lý null tiềm ẩn từ API/JSON
-      password: json['password'] as String? ?? '', // Xử lý null tiềm ẩn từ API/JSON
-      role: json['role'] as String? ?? 'user', // Xử lý null, giữ giá trị mặc định
+      name: json['name'] as String? ?? '',
+      email: json['email'] as String? ?? '',
+      password: json['password'] as String? ?? '',
+      role: json['role'] as String? ?? 'user',
     );
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] = name;
-    data['email'] = email;
-    data['password'] = password;
-    data['role'] = role;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'email': email,
+        'password': password,
+        'role': role,
+      };
+
+  String toJsonString() => json.encode(toJson());
+
+  factory UserCreate.fromJsonString(String source) =>
+      UserCreate.fromJson(json.decode(source) as Map<String, dynamic>);
 
   UserCreate copyWith({
     String? name,

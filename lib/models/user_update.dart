@@ -1,12 +1,10 @@
-
 class UserUpdate {
   final String? name;
   final String? email;
   final String? role;
-  // Bạn có thể thêm các trường khác có thể cập nhật, ví dụ:
   // final String? avatarUrl;
-  // final String? currentPassword; // Nếu cập nhật mật khẩu yêu cầu mật khẩu hiện tại
-  // final String? newPassword;     // Mật khẩu mới
+  // final String? currentPassword;
+  // final String? newPassword;
 
   UserUpdate({
     this.name,
@@ -18,37 +16,24 @@ class UserUpdate {
   });
 
   factory UserUpdate.fromJson(Map<String, dynamic> json) {
-    // fromJson cho DTO cập nhật thường ít dùng vì DTO này chủ yếu để gửi đi.
-    // Nếu dùng, nó sẽ đọc các giá trị có thể có.
     return UserUpdate(
       name: json['name'] as String?,
       email: json['email'] as String?,
       role: json['role'] as String?,
       // avatarUrl: json['avatarUrl'] as String?,
+      // currentPassword: json['currentPassword'] as String?,
+      // newPassword: json['newPassword'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    // Chỉ thêm vào JSON nếu giá trị không null
-    if (name != null) {
-      data['name'] = name;
-    }
-    if (email != null) {
-      data['email'] = email;
-    }
-    if (role != null) {
-      data['role'] = role;
-    }
-    // if (avatarUrl != null) {
-    //   data['avatarUrl'] = avatarUrl;
-    // }
-    // if (currentPassword != null) {
-    //   data['currentPassword'] = currentPassword;
-    // }
-    // if (newPassword != null) {
-    //   data['newPassword'] = newPassword;
-    // }
+    final data = <String, dynamic>{};
+    if (name != null) data['name'] = name;
+    if (email != null) data['email'] = email;
+    if (role != null) data['role'] = role;
+    // if (avatarUrl != null) data['avatarUrl'] = avatarUrl;
+    // if (currentPassword != null) data['currentPassword'] = currentPassword;
+    // if (newPassword != null) data['newPassword'] = newPassword;
     return data;
   }
 

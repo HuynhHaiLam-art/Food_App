@@ -21,36 +21,44 @@ class CategorySelector extends StatelessWidget {
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final isSelected = selectedCategoryIndex == index;
-          return GestureDetector(
-            onTap: () => onCategorySelected(index),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              margin: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.orange.withOpacity(0.8) : Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(
-                  color: isSelected ? Colors.orange : Colors.white24,
-                  width: 1.5,
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2.0),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(25),
+              splashColor: Colors.orange.withOpacity(0.2),
+              onTap: () => onCategorySelected(index),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                margin: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                decoration: BoxDecoration(
+                  color: isSelected ? Colors.orange.withOpacity(0.8) : Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(
+                    color: isSelected ? Colors.orange : Colors.white24,
+                    width: 1.5,
+                  ),
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: Colors.orange.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          )
+                        ]
+                      : [],
                 ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: Colors.orange.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        )
-                      ]
-                    : [],
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                categories[index],
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.white70,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  fontSize: 15,
+                alignment: Alignment.center,
+                child: Tooltip(
+                  message: categories[index],
+                  child: Text(
+                    categories[index],
+                    style: TextStyle(
+                      color: isSelected ? Colors.white : Colors.white70,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
               ),
             ),

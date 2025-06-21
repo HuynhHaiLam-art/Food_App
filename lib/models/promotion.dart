@@ -4,7 +4,7 @@ class Promotion {
   final int id;
   final String code;
   final String? description;
-  final int? discountPercent; // Giữ nguyên kiểu int? như C# DTO
+  final int? discountPercent;
   final DateTime startDate;
   final DateTime endDate;
 
@@ -19,26 +19,25 @@ class Promotion {
 
   factory Promotion.fromJson(Map<String, dynamic> json) {
     return Promotion(
-      id: json['id'] as int? ?? 0, // Thêm ?? 0 để an toàn nếu API có thể trả về null cho trường required
-      code: json['code'] as String? ?? '', // Thêm ?? ''
+      id: json['id'] as int? ?? 0,
+      code: json['code'] as String? ?? '',
       description: json['description'] as String?,
       discountPercent: json['discountPercent'] as int?,
-      // Giả sử startDate và endDate luôn có và đúng định dạng từ API
-      // Nếu không, cần xử lý null hoặc dùng DateTime.tryParse
-      startDate: DateTime.parse(json['startDate'] as String),
-      endDate: DateTime.parse(json['endDate'] as String),
+      startDate: DateTime.tryParse(json['startDate'] as String? ?? '') ?? DateTime.now(),
+      endDate: DateTime.tryParse(json['endDate'] as String? ?? '') ?? DateTime.now(),
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final data = <String, dynamic>{
       'id': id,
       'code': code,
-      'description': description,
-      'discountPercent': discountPercent,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
     };
+    if (description != null) data['description'] = description;
+    if (discountPercent != null) data['discountPercent'] = discountPercent;
+    return data;
   }
 
   Promotion copyWith({

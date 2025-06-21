@@ -14,6 +14,10 @@ class SearchBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showClear = controller != null &&
+        controller!.text.isNotEmpty &&
+        onClear != null;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.12), // Màu nền của thanh tìm kiếm
@@ -26,10 +30,12 @@ class SearchBarWidget extends StatelessWidget {
           hintText: 'Tìm kiếm món ăn...', // Chữ gợi ý
           hintStyle: const TextStyle(color: Colors.white54), // Màu chữ gợi ý
           prefixIcon: const Icon(Icons.search, color: Colors.white), // Icon tìm kiếm ở đầu
-          suffixIcon: (controller != null && controller!.text.isNotEmpty && onClear != null)
-              ? IconButton( // Icon xóa ở cuối (chỉ hiện khi có text và có hàm onClear)
+          suffixIcon: showClear
+              ? IconButton(
                   icon: const Icon(Icons.clear, color: Colors.white),
                   onPressed: onClear,
+                  splashRadius: 20,
+                  tooltip: 'Xóa nội dung',
                 )
               : null,
           border: InputBorder.none, // Bỏ đường viền mặc định của TextField

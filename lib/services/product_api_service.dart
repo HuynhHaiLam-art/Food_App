@@ -21,6 +21,7 @@ class ProductApiService {
     return headers;
   }
 
+  /// Lấy danh sách sản phẩm
   Future<List<Product>> fetchProducts() async {
     final uri = Uri.parse(_baseUrl);
     try {
@@ -52,6 +53,7 @@ class ProductApiService {
     }
   }
 
+  /// Lấy chi tiết sản phẩm theo ID
   Future<Product> fetchProductById(int id) async {
     final uri = Uri.parse('$_baseUrl/$id');
     try {
@@ -82,7 +84,7 @@ class ProductApiService {
     }
   }
 
-  // Các hàm create, update, delete có thể yêu cầu token xác thực
+  /// Tạo mới sản phẩm
   Future<Product> createProduct(Product product, {String? token}) async {
     final uri = Uri.parse(_baseUrl);
     try {
@@ -94,7 +96,7 @@ class ProductApiService {
           )
           .timeout(_timeoutDuration);
 
-      if (response.statusCode == 201 || response.statusCode == 200) { // 201 Created or 200 OK
+      if (response.statusCode == 201 || response.statusCode == 200) {
         try {
           return Product.fromJson(json.decode(response.body) as Map<String, dynamic>);
         } on FormatException catch (e) {
@@ -117,6 +119,7 @@ class ProductApiService {
     }
   }
 
+  /// Cập nhật sản phẩm
   Future<Product> updateProduct(Product product, {String? token}) async {
     if (product.id == null) {
       throw ArgumentError('Product ID cannot be null for update.');
@@ -131,15 +134,10 @@ class ProductApiService {
           )
           .timeout(_timeoutDuration);
 
-      if (response.statusCode == 200) { // Hoặc 204 No Content nếu API không trả về body
+      if (response.statusCode == 200) {
         try {
-          // Nếu API trả về 204, response.body sẽ rỗng và json.decode sẽ lỗi.
-          // Cần kiểm tra response.body trước khi decode nếu có khả năng là 204.
           if (response.body.isEmpty && response.statusCode == 204) {
-             // Nếu là 204 và không có body, có thể trả về product đã gửi đi
-             // hoặc yêu cầu API trả về 200 với body.
-             // Ở đây, giả sử API trả về 200 với body.
-             throw Exception('Cập nhật thành công nhưng không có nội dung trả về (204).');
+            throw Exception('Cập nhật thành công nhưng không có nội dung trả về (204).');
           }
           return Product.fromJson(json.decode(response.body) as Map<String, dynamic>);
         } on FormatException catch (e) {
@@ -147,12 +145,9 @@ class ProductApiService {
           throw Exception('Dữ liệu sản phẩm cập nhật không hợp lệ.');
         }
       } else if (response.statusCode == 204) {
-        // Xử lý trường hợp 204 No Content (thành công nhưng không có body)
-        // Có thể trả về product ban đầu hoặc một giá trị biểu thị thành công
         print('Product updated successfully (204 No Content). Returning original product.');
-        return product; // Hoặc ném lỗi/trả về một cách khác tùy logic ứng dụng
-      }
-      else {
+        return product;
+      } else {
         print('Failed to update product: ${response.statusCode}, body: ${response.body}');
         throw Exception('Cập nhật sản phẩm thất bại (mã: ${response.statusCode}).');
       }
@@ -168,6 +163,7 @@ class ProductApiService {
     }
   }
 
+  /// Xóa sản phẩm
   Future<void> deleteProduct(int id, {String? token}) async {
     final uri = Uri.parse('$_baseUrl/$id');
     try {

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Thêm dòng này
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../models/user_update.dart';
 import '../models/user.dart';
+import '../widgets/home/background_widget.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,12 +15,26 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final _nameController = TextEditingController();
+  final _oldPassController = TextEditingController();
+  final _newPassController = TextEditingController();
+  final _confirmPassController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _oldPassController.dispose();
+    _newPassController.dispose();
+    _confirmPassController.dispose();
+    super.dispose();
+  }
+
   Future<void> _editProfile(BuildContext context, User currentUser) async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final nameController = TextEditingController(text: currentUser.name);
-    final oldPassController = TextEditingController();
-    final newPassController = TextEditingController();
-    final confirmPassController = TextEditingController();
+    _nameController.text = currentUser.name ?? '';
+    _oldPassController.clear();
+    _newPassController.clear();
+    _confirmPassController.clear();
     final formKey = GlobalKey<FormState>();
 
     final result = await showDialog<bool>(
@@ -62,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 24),
                         TextFormField(
-                          controller: nameController,
+                          controller: _nameController,
                           style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -91,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
-                          controller: oldPassController,
+                          controller: _oldPassController,
                           obscureText: true,
                           style: GoogleFonts.poppins(
                             color: Colors.white,
@@ -118,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 12),
                         TextFormField(
-                          controller: newPassController,
+                          controller: _newPassController,
                           obscureText: true,
                           style: GoogleFonts.poppins(
                             color: Colors.white,
@@ -143,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                           ),
                           validator: (value) {
-                            if (oldPassController.text.isNotEmpty && (value == null || value.length < 6)) {
+                            if (_oldPassController.text.isNotEmpty && (value == null || value.length < 6)) {
                               return 'Mật khẩu mới tối thiểu 6 ký tự';
                             }
                             return null;
@@ -151,7 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 12),
                         TextFormField(
-                          controller: confirmPassController,
+                          controller: _confirmPassController,
                           obscureText: true,
                           style: GoogleFonts.poppins(
                             color: Colors.white,
@@ -176,8 +192,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                           ),
                           validator: (value) {
-                            if (oldPassController.text.isNotEmpty && (value == null || value.isEmpty)) {
+                            if (_oldPassController.text.isNotEmpty && (value == null || value.isEmpty)) {
                               return 'Vui lòng nhập lại mật khẩu mới';
+                            }
+                            if (_oldPassController.text.isNotEmpty &&
+                                value != _newPassController.text) {
+                              return 'Mật khẩu không khớp';
                             }
                             return null;
                           },
@@ -222,29 +242,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ? null
                                     : () async {
                                         if (formKey.currentState!.validate()) {
-                                          if (oldPassController.text.isNotEmpty &&
-                                              newPassController.text != confirmPassController.text) {
-                                            setStateDialog(() {
-                                              localErrorMessage = 'Mật khẩu không khớp';
-                                            });
-                                            return;
-                                          }
-
                                           setStateDialog(() {
-                                            isLoading = true;
                                             localErrorMessage = null;
                                           });
 
                                           final userUpdateData = UserUpdate(
-                                            name: nameController.text.trim(),
+                                            name: _nameController.text.trim(),
                                             email: currentUser.email,
                                             role: currentUser.role,
                                           );
 
+                                          setStateDialog(() {
+                                            isLoading = true;
+                                          });
+
                                           final success = await authProvider.updateUserProfile(
                                             userUpdateData,
-                                            oldPassword: oldPassController.text.isNotEmpty ? oldPassController.text : null,
-                                            newPassword: newPassController.text.isNotEmpty ? newPassController.text : null,
+                                            oldPassword: _oldPassController.text.isNotEmpty ? _oldPassController.text : null,
+                                            newPassword: _newPassController.text.isNotEmpty ? _newPassController.text : null,
                                           );
 
                                           if (success) {
@@ -295,7 +310,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
 
+    // Nếu cập nhật thành công, refresh lại user
     if (result == true && mounted) {
+      await Provider.of<AuthProvider>(context, listen: false).refreshCurrentUser();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -305,6 +322,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           backgroundColor: Colors.green,
         ),
       );
+      setState(() {});
     }
   }
 
@@ -314,182 +332,169 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final currentUser = authProvider.currentUser;
 
     if (currentUser == null) {
-      return Scaffold(
-        backgroundColor: Colors.black.withOpacity(0.8),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Vui lòng đăng nhập để xem thông tin.', style: TextStyle(color: Colors.white)),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Điều hướng đến màn hình đăng nhập
-                },
-                child: const Text('Đăng nhập'),
-              )
-            ],
+      return BackgroundWidget(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Vui lòng đăng nhập để xem thông tin.', style: TextStyle(color: Colors.white)),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    );
+                  },
+                  child: const Text('Đăng nhập'),
+                )
+              ],
+            ),
           ),
         ),
       );
     }
 
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Image.asset(
-            'assets/images/background.jpg',
-            fit: BoxFit.cover,
-          ),
-        ),
-        Positioned.fill(
-          child: Container(
-            color: Colors.black.withOpacity(0.4),
-          ),
-        ),
-        Scaffold(
+    return BackgroundWidget(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: const Text('Thông tin cá nhân'),
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: const Text('Thông tin cá nhân'),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 16,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                          border: Border.all(color: Colors.white, width: 3),
-                        ),
-                        child: const CircleAvatar(
-                          radius: 48,
-                          backgroundColor: Color(0xFF7C5CFC),
-                          child: Icon(Icons.person, size: 48, color: Colors.white),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        currentUser.name ?? 'N/A',
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        currentUser.email ?? 'N/A',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 32),
-                _ProfileButton(
-                  icon: Icons.edit,
-                  label: 'Chỉnh sửa thông tin',
-                  onPressed: () => _editProfile(context, currentUser),
-                ),
-                const SizedBox(height: 18),
-                _ProfileButton(
-                  icon: Icons.logout,
-                  label: 'Đăng xuất',
-                  onPressed: () async {
-                    final confirm = await showDialog<bool>(
-                      context: context,
-                      builder: (dialogContext) => AlertDialog(
-                        backgroundColor: Colors.grey[900],
-                        title: const Text('Xác nhận đăng xuất', style: TextStyle(color: Colors.white)),
-                        content: const Text('Bạn có chắc chắn muốn đăng xuất không?', style: TextStyle(color: Colors.white70)),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(dialogContext, false),
-                            child: const Text('Hủy', style: TextStyle(color: Colors.white)),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(dialogContext, true);
-                            },
-                            child: const Text('Đăng xuất', style: TextStyle(color: Colors.red)),
+          elevation: 0,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 16,
+                            offset: const Offset(0, 8),
                           ),
                         ],
+                        border: Border.all(color: Colors.white, width: 3),
                       ),
-                    );
-                    if (confirm == true && mounted) {
-                      await authProvider.logout();
-                      if (mounted) Navigator.of(context).popUntil((route) => route.isFirst);
-                    }
-                  },
-                  color: Colors.red,
-                  border: false,
+                      child: const CircleAvatar(
+                        radius: 48,
+                        backgroundColor: Color(0xFF7C5CFC),
+                        child: Icon(Icons.person, size: 48, color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      currentUser.name ?? 'N/A',
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      currentUser.email ?? 'N/A',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                const Text(
-                  'Lịch sử đơn hàng',
-                  style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 3,
-                  separatorBuilder: (context, index) => const Divider(color: Colors.white24),
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                      leading: CircleAvatar(
-                        radius: 28,
-                        backgroundColor: Colors.orange,
-                        child: const Icon(Icons.receipt_long, size: 28, color: Colors.white),
-                      ),
-                      title: Text(
-                        'Đơn hàng #${12345 - index}',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(
-                        'Ngày: ${DateTime.now().subtract(Duration(days: index * 3)).toLocal().toString().split(' ')[0]} - Trạng thái: Đã giao',
-                        style: const TextStyle(color: Colors.white70, fontSize: 12),
-                      ),
-                      trailing: Text(
-                        '${(5 - index) * 75000} VNĐ',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Xem chi tiết đơn hàng #${12345 - index} (chưa implement)')),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 32),
+              _ProfileButton(
+                icon: Icons.edit,
+                label: 'Chỉnh sửa thông tin',
+                onPressed: () => _editProfile(context, currentUser),
+              ),
+              const SizedBox(height: 18),
+              _ProfileButton(
+                icon: Icons.logout,
+                label: 'Đăng xuất',
+                onPressed: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (dialogContext) => AlertDialog(
+                      backgroundColor: Colors.grey[900],
+                      title: const Text('Xác nhận đăng xuất', style: TextStyle(color: Colors.white)),
+                      content: const Text('Bạn có chắc chắn muốn đăng xuất không?', style: TextStyle(color: Colors.white70)),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(dialogContext, false),
+                          child: const Text('Hủy', style: TextStyle(color: Colors.white)),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(dialogContext, true);
+                          },
+                          child: const Text('Đăng xuất', style: TextStyle(color: Colors.red)),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirm == true && mounted) {
+                    await authProvider.logout();
+                    if (mounted) Navigator.of(context).popUntil((route) => route.isFirst);
+                  }
+                },
+                color: Colors.red,
+                border: false,
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Lịch sử đơn hàng',
+                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 3,
+                separatorBuilder: (context, index) => const Divider(color: Colors.white24),
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    leading: CircleAvatar(
+                      radius: 28,
+                      backgroundColor: Colors.orange,
+                      child: const Icon(Icons.receipt_long, size: 28, color: Colors.white),
+                    ),
+                    title: Text(
+                      'Đơn hàng #${12345 - index}',
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      'Ngày: ${DateTime.now().subtract(Duration(days: index * 3)).toLocal().toString().split(' ')[0]} - Trạng thái: Đã giao',
+                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                    ),
+                    trailing: Text(
+                      '${(5 - index) * 75000} VNĐ',
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Xem chi tiết đơn hàng #${12345 - index} (chưa implement)')),
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 }

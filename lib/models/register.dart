@@ -10,7 +10,7 @@ class RegisterDTO {
     required this.name,
     required this.email,
     required this.password,
-    this.role = 'user', // Giá trị mặc định cho role
+    this.role = 'user',
   });
 
   Map<String, dynamic> toJson() => {
@@ -20,19 +20,19 @@ class RegisterDTO {
         'role': role,
       };
 
-  // Factory constructor fromJson (ít phổ biến cho DTO gửi đi, nhưng có thể hữu ích)
   factory RegisterDTO.fromJson(Map<String, dynamic> json) {
     return RegisterDTO(
       name: json['name'] as String? ?? '',
       email: json['email'] as String? ?? '',
       password: json['password'] as String? ?? '',
-      role: json['role'] as String? ?? 'user', // Giữ giá trị mặc định nếu null
+      role: json['role'] as String? ?? 'user',
     );
   }
 
-  // Tiện ích để chuyển đổi từ/sang chuỗi JSON (nếu cần)
   String toJsonString() => json.encode(toJson());
-  factory RegisterDTO.fromJsonString(String source) => RegisterDTO.fromJson(json.decode(source) as Map<String, dynamic>);
+
+  factory RegisterDTO.fromJsonString(String source) =>
+      RegisterDTO.fromJson(json.decode(source) as Map<String, dynamic>);
 
   RegisterDTO copyWith({
     String? name,

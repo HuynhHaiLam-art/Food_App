@@ -1,75 +1,92 @@
-import 'package:flutter/foundation.dart'; // For ChangeNotifier
-import 'dart:collection'; // For UnmodifiableMapView
+import 'package:flutter/foundation.dart';
+import '../models/cartitem.dart';
+import '../models/product.dart';
 
 class CartProvider extends ChangeNotifier {
-  final Map<int, int> _cartCounts = {};
+  final List<CartItem> _items = [];
+  final Map<int, int> _cartCounts = {}; // Key: productId, Value: quantity
 
-  /// Returns an unmodifiable view of the cart items and their counts.
-  /// Key: productId, Value: quantity
-  Map<int, int> get cartCounts => UnmodifiableMapView(_cartCounts);
+  /// Getter cho danh sách CartItem (dùng cho API/checkout)
+  List<CartItem> get items => List.unmodifiable(_items);
 
-  /// Gets the quantity of a specific product in the cart.
-  /// Returns 0 if the product is not in the cart.
+  /// Getter cho map đếm số lượng từng sản phẩm trong giỏ (dùng cho UI)
+  Map<int, int> get cartCounts => Map.unmodifiable(_cartCounts);
+
+  /// Tổng tiền dựa trên CartItem
+  double get totalPrice => _items.fold(
+      0, (sum, item) => sum + (item.price) * (item.quantity ?? 1));
+
+  /// Lấy số lượng của một sản phẩm trong giỏ
   int getQuantity(int productId) {
     return _cartCounts[productId] ?? 0;
   }
 
-  /// Adds one unit of the product to the cart.
-  /// If the product is already in the cart, its quantity is incremented.
-  void addToCart(int productId) {
-    _cartCounts[productId] = (_cartCounts[productId] ?? 0) + 1;
-    notifyListeners();
-  }
-
-  /// Sets the quantity for a specific product in the cart.
-  /// If the count is less than or equal to 0, the product is removed from the cart.
-  void setCartCount(int productId, int count) {
-    if (count <= 0) {
-      _cartCounts.remove(productId);
+  /// Thêm một sản phẩm vào giỏ (tăng số lượng nếu đã có)
+  /// Luôn truyền vào cartItem có đủ thông tin Product
+  void addToCart(Product product) {
+    if (product.id == null) return;
+    _cartCounts[product.id!] = (_cartCounts[product.id!] ?? 0) + 1;
+    final index = _items.indexWhere((item) => item.foodId == product.id);
+    if (index == -1) {
+      _items.add(CartItem(
+        foodId: product.id,
+        food: product,
+        quantity: 1,
+      ));
     } else {
-      _cartCounts[productId] = count;
+      _items[index] = _items[index].copyWith(
+        quantity: _cartCounts[product.id!],
+      );
     }
     notifyListeners();
   }
 
-  /// Decrements the quantity of a product by one.
-  /// If the quantity becomes 0, the product is removed from the cart.
+  /// Đặt số lượng cho một sản phẩm
+  void setCartCount(int productId, int count) {
+    if (count <= 0) {
+      _cartCounts.remove(productId);
+      _items.removeWhere((item) => item.foodId == productId);
+    } else {
+      _cartCounts[productId] = count;
+      final index = _items.indexWhere((item) => item.foodId == productId);
+      if (index != -1) {
+        _items[index] = _items[index].copyWith(quantity: count);
+      }
+    }
+    notifyListeners();
+  }
+
+  /// Giảm số lượng sản phẩm, nếu về 0 thì xóa khỏi giỏ
   void removeFromCart(int productId) {
     if (_cartCounts.containsKey(productId)) {
       int currentCount = _cartCounts[productId]!;
       if (currentCount > 1) {
         _cartCounts[productId] = currentCount - 1;
+        final index = _items.indexWhere((item) => item.foodId == productId);
+        if (index != -1) {
+          _items[index] =
+              _items[index].copyWith(quantity: _cartCounts[productId]);
+        }
       } else {
-        // If current count is 1 (or less, though not expected here), remove it
         _cartCounts.remove(productId);
+        _items.removeWhere((item) => item.foodId == productId);
       }
       notifyListeners();
     }
   }
 
-  /// Removes all items from the cart.
+  /// Xóa toàn bộ giỏ hàng
   void clearCart() {
-    if (_cartCounts.isNotEmpty) {
+    if (_cartCounts.isNotEmpty || _items.isNotEmpty) {
       _cartCounts.clear();
+      _items.clear();
       notifyListeners();
     }
   }
 
-  /// Calculates the total number of individual items in the cart.
+  /// Tổng số lượng sản phẩm (tất cả)
   int get totalItems => _cartCounts.values.fold(0, (sum, count) => sum + count);
 
-  /// Calculates the number of unique product types in the cart.
+  /// Số loại sản phẩm khác nhau
   int get uniqueItemsCount => _cartCounts.length;
-
-  // Nếu bạn có thông tin về giá sản phẩm, bạn có thể thêm phương thức tính tổng tiền:
-  // double calculateTotalPrice(List<Product> allProducts) {
-  //   double total = 0;
-  //   _cartCounts.forEach((productId, quantity) {
-  //     final product = allProducts.firstWhere((p) => p.id == productId, orElse: () => null);
-  //     if (product != null && product.price != null) {
-  //       total += product.price! * quantity;
-  //     }
-  //   });
-  //   return total;
-  // }
 }

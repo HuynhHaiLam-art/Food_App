@@ -14,7 +14,6 @@ class LoginDTO {
         'password': password,
       };
 
-  // Factory constructor fromJson (ít phổ biến cho DTO gửi đi, nhưng có thể hữu ích)
   factory LoginDTO.fromJson(Map<String, dynamic> json) {
     return LoginDTO(
       email: json['email'] as String? ?? '',
@@ -22,9 +21,10 @@ class LoginDTO {
     );
   }
 
-  // Tiện ích để chuyển đổi từ/sang chuỗi JSON (nếu cần)
   String toJsonString() => json.encode(toJson());
-  factory LoginDTO.fromJsonString(String source) => LoginDTO.fromJson(json.decode(source) as Map<String, dynamic>);
+
+  factory LoginDTO.fromJsonString(String source) =>
+      LoginDTO.fromJson(json.decode(source) as Map<String, dynamic>);
 
   LoginDTO copyWith({
     String? email,
@@ -42,7 +42,6 @@ class LoginDTO {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-
     return other is LoginDTO &&
         other.email == email &&
         other.password == password;
