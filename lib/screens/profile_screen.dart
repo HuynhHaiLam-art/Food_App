@@ -6,6 +6,9 @@ import '../models/user_update.dart';
 import '../models/user.dart';
 import '../widgets/home/background_widget.dart';
 import 'login_screen.dart';
+import '../services/order_api_service.dart';
+import '../models/order.dart';
+import 'order_detail_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -19,6 +22,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _oldPassController = TextEditingController();
   final _newPassController = TextEditingController();
   final _confirmPassController = TextEditingController();
+
+  Future<List<Order>>? _ordersFuture;
+  int? _userId;
+
+  @override
+  void initState() {
+    super.initState();
+    // Không dùng context ở đây, sẽ lấy userId trong didChangeDependencies
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final user = authProvider.currentUser;
+    if (user != null && user.id != null && user.id != _userId) {
+      _userId = user.id;
+      _ordersFuture = OrderApiService().getOrders(user.id!);
+      setState(() {});
+    }
+  }
 
   @override
   void dispose() {
@@ -39,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final result = await showDialog<bool>(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.7),
+      barrierColor: Colors.black.withAlpha((0.7 * 255).round()),
       barrierDismissible: false,
       builder: (dialogContext) {
         String? localErrorMessage;
@@ -54,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 24),
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.09),
+                    color: Colors.white.withAlpha((0.09 * 255).round()),
                     borderRadius: BorderRadius.circular(32),
                   ),
                   child: Form(
@@ -86,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: Colors.white.withOpacity(0.10),
+                            fillColor: Colors.white.withAlpha((0.10 * 255).round()),
                             labelText: 'Tên mới',
                             labelStyle: GoogleFonts.poppins(
                               color: Colors.white,
@@ -115,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: Colors.white.withOpacity(0.10),
+                            fillColor: Colors.white.withAlpha((0.10 * 255).round()),
                             labelText: 'Mật khẩu cũ (bỏ qua nếu chỉ đổi tên)',
                             labelStyle: GoogleFonts.poppins(
                               color: Colors.white70,
@@ -142,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: Colors.white.withOpacity(0.10),
+                            fillColor: Colors.white.withAlpha((0.10 * 255).round()),
                             labelText: 'Mật khẩu mới',
                             labelStyle: GoogleFonts.poppins(
                               color: Colors.white70,
@@ -175,7 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: Colors.white.withOpacity(0.10),
+                            fillColor: Colors.white.withAlpha((0.10 * 255).round()),
                             labelText: 'Nhập lại mật khẩu mới',
                             labelStyle: GoogleFonts.poppins(
                               color: Colors.white70,
@@ -378,7 +402,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withAlpha((0.2 * 255).round()),
                             blurRadius: 16,
                             offset: const Offset(0, 8),
                           ),
@@ -458,34 +482,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 3,
-                separatorBuilder: (context, index) => const Divider(color: Colors.white24),
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    leading: CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Colors.orange,
-                      child: const Icon(Icons.receipt_long, size: 28, color: Colors.white),
-                    ),
-                    title: Text(
-                      'Đơn hàng #${12345 - index}',
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      'Ngày: ${DateTime.now().subtract(Duration(days: index * 3)).toLocal().toString().split(' ')[0]} - Trạng thái: Đã giao',
-                      style: const TextStyle(color: Colors.white70, fontSize: 12),
-                    ),
-                    trailing: Text(
-                      '${(5 - index) * 75000} VNĐ',
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Xem chi tiết đơn hàng #${12345 - index} (chưa implement)')),
+              FutureBuilder<List<Order>>(
+                future: _ordersFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Text(
+                      'Lỗi tải đơn hàng: ${snapshot.error}',
+                      style: const TextStyle(color: Colors.redAccent),
+                    );
+                  }
+                  final orders = (snapshot.data ?? []).where((order) => order.userId == currentUser.id).toList();
+                  if (orders.isEmpty) {
+                    return const Text(
+                      'Bạn chưa có đơn hàng nào.',
+                      style: TextStyle(color: Colors.white70),
+                    );
+                  }
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: orders.length,
+                    separatorBuilder: (context, index) => const Divider(color: Colors.white24),
+                    itemBuilder: (context, index) {
+                      final order = orders[index];
+                      return ListTile(
+                        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        leading: CircleAvatar(
+                          radius: 28,
+                          backgroundColor: Colors.orange,
+                          child: const Icon(Icons.receipt_long, size: 28, color: Colors.white),
+                        ),
+                        title: Text(
+                          'Đơn hàng #${order.id}',
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          // Đổi order.orderDate thành đúng trường ngày tháng của bạn
+                          'Ngày: ${order.orderDate?.toLocal().toString().split(' ')[0] ?? 'N/A'} - Trạng thái: ${order.status ?? 'N/A'}',
+                          style: const TextStyle(color: Colors.white70, fontSize: 12),
+                        ),
+                        trailing: Text(
+                          '${order.totalAmount?.toStringAsFixed(0) ?? '0'} VNĐ',
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => OrderDetailScreen(order: order),
+                            ),
+                          );
+                        },
                       );
                     },
                   );
@@ -526,7 +575,7 @@ class _ProfileButton extends StatelessWidget {
         ),
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: color ?? Colors.white.withOpacity(0.08),
+          backgroundColor: color ?? Colors.white.withAlpha((0.08 * 255).round()),
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           shape: RoundedRectangleBorder(

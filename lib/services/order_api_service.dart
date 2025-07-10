@@ -18,25 +18,15 @@ class OrderApiService {
   }
 
   Future<List<Order>> getOrders(int userId, {String? token}) async {
-    final uri = Uri.parse('$_baseUrl/user/$userId');
-    try {
-      final response = await http
-          .get(uri, headers: _getHeaders(token: token))
-          .timeout(_timeoutDuration);
+    final response = await http.get(
+      Uri.parse('$_baseUrl?userId=$userId'), // Đảm bảo có userId trên URL
+      headers: _getHeaders(token: token),
+    ).timeout(_timeoutDuration);
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data.map((e) => Order.fromJson(e as Map<String, dynamic>)).toList();
-      } else {
-        print('OrderApiService.getOrders error: ${response.statusCode} - ${response.body}');
-        throw Exception('Lỗi tải đơn hàng (mã: ${response.statusCode}).');
-      }
-    } on SocketException {
-      throw Exception('Không có kết nối mạng. Vui lòng thử lại.');
-    } on TimeoutException {
-      throw Exception('Yêu cầu quá thời gian. Vui lòng thử lại.');
-    } catch (e) {
-      print('OrderApiService.getOrders unexpected error: $e');
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((json) => Order.fromJson(json)).toList();
+    } else {
       throw Exception('Đã xảy ra lỗi không mong muốn khi tải đơn hàng.');
     }
   }
