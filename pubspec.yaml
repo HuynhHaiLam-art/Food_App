@@ -11,14 +11,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
-  http: ^1.0.0
-  google_fonts: ^6.0.0
-  provider: ^6.0.0
-  cached_network_image: ^3.4.1
+  http: ^1.1.0
+  provider: ^6.1.2
+  google_fonts: ^6.1.0
+  cached_network_image: ^3.3.0
+  cupertino_icons: ^1.0.2
   intl: ^0.20.2 # Kiểm tra phiên bản mới nhất trên pub.dev
   shared_preferences: ^2.0.0 # Hoặc phiên bản mới nhất
   url_launcher: ^6.2.5 # Thêm dòng này để mở link thanh toán (VNPay, Momo)

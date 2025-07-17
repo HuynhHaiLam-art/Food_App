@@ -1,22 +1,13 @@
 import 'package:intl/intl.dart'; // Thư viện định dạng số, ngày tháng
 
-/// Định dạng số thành tiền tệ Việt Nam, ví dụ: 1.000.000 VNĐ
-String formatCurrency(num? value, {String locale = 'vi_VN', String symbol = ' VNĐ'}) {
-  if (value == null) return '0$symbol';
-  final formatter = NumberFormat.currency(locale: locale, symbol: '', decimalDigits: 0);
-  return '${formatter.format(value)}$symbol';
+String formatCurrency(double amount) {
+  return '${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} ₫';
 }
 
-/// Định dạng ngày theo chuẩn Việt Nam, ví dụ: 10/06/2025
-String formatDate(DateTime? date, {String pattern = 'dd/MM/yyyy'}) {
-  if (date == null) return '';
-  return DateFormat(pattern).format(date);
+String formatDate(DateTime date) {
+  return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
 }
 
-/// Định dạng giờ phút, ví dụ: 14:30
-String formatTime(DateTime? date, {String pattern = 'HH:mm'}) {
-  if (date == null) return '';
-  return DateFormat(pattern).format(date);
+String formatDateTime(DateTime date) {
+  return '${formatDate(date)} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 }
-
-// Bạn có thể thêm các hàm formatter khác ở đây nếu cần

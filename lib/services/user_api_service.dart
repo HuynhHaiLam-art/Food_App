@@ -1,213 +1,309 @@
 import 'dart:convert';
-import 'dart:io'; // Dùng cho SocketException (lỗi kết nối mạng)
-import 'dart:async'; // Dùng cho TimeoutException (lỗi quá thời gian yêu cầu)
+import 'dart:io';
+import 'dart:async';
 import 'package:http/http.dart' as http;
-import '../models/register.dart';
-import '../models/login.dart';
-import '../models/user_update.dart'; // Dùng cho updateUserProfile
-import '../models/user.dart'; // Dùng để trả về đối tượng User
+import '../models/user.dart';
 
 class UserApiService {
-  // Endpoint API cơ sở cho các hoạt động liên quan đến User (bao gồm đăng nhập, đăng ký, cập nhật profile)
   static const String _baseUrl = 'http://localhost:5062/api/User';
+  static const Duration _timeoutDuration = Duration(seconds: 20); // ✅ Tăng timeout
 
-  // Thời gian chờ tối đa cho một yêu cầu API
-  static const Duration _timeoutDuration = Duration(seconds: 10);
-
-  // Hàm helper để tạo headers cho request
-  Map<String, String> _getHeaders({String? token, bool isJsonContent = true}) {
-    final headers = <String, String>{};
-    if (isJsonContent) {
-      headers['Content-Type'] = 'application/json; charset=UTF-8';
-    }
+  Map<String, String> _getHeaders({String? token}) {
+    final headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json',
+    };
     if (token != null) {
-      headers['Authorization'] = 'Bearer $token'; // Thêm token vào header nếu có
+      headers['Authorization'] = 'Bearer $token';
     }
     return headers;
   }
 
-  /// Đăng ký người dùng mới
-  Future<Map<String, dynamic>> register(RegisterDTO dto) async {
-    final url = Uri.parse(_baseUrl);
+  // ✅ Login - unchanged
+  Future<Map<String, dynamic>> login(String email, String password) async {
     try {
-      final response = await http
-          .post(
-            url,
-            headers: _getHeaders(),
-            body: jsonEncode(dto.toJson()),
-          )
-          .timeout(_timeoutDuration);
+      final response = await http.post(
+        Uri.parse('$_baseUrl/login'),
+        headers: _getHeaders(),
+        body: json.encode({
+          'email': email,
+          'password': password,
+        }),
+      ).timeout(_timeoutDuration);
 
-      print('Trạng thái đăng ký: ${response.statusCode}');
-      print('Nội dung phản hồi đăng ký: ${response.body}');
+      print('🔐 Login Response: ${response.statusCode}');
 
-      final responseBody = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Đăng nhập thất bại: ${response.body}');
+      }
+    } catch (e) {
+      print('❌ Login Error: $e');
+      rethrow;
+    }
+  }
+
+  // ✅ Register - unchanged  
+  Future<Map<String, dynamic>> register(String name, String email, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/register'),
+        headers: _getHeaders(),
+        body: json.encode({
+          'name': name,
+          'email': email,
+          'password': password,
+          'role': 'User',
+        }),
+      ).timeout(_timeoutDuration);
+
+      print('📝 Register Response: ${response.statusCode}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        if (responseBody is Map<String, dynamic>) {
-          if (responseBody.containsKey('id') && responseBody.containsKey('email')) {
-             return {'user': responseBody, 'message': 'Đăng ký thành công.'};
-          }
-          if (responseBody.containsKey('message')) {
-             return {'message': responseBody['message']};
-          }
-        }
-        return {'message': 'Đăng ký thành công. Vui lòng đăng nhập.'};
+        return json.decode(response.body);
       } else {
-        throw Exception(responseBody['message'] ?? 'Đăng ký thất bại (mã: ${response.statusCode}).');
+        throw Exception('Đăng ký thất bại: ${response.body}');
       }
-    } on SocketException {
-      print('Không có kết nối mạng khi đăng ký');
-      throw Exception('Không có kết nối mạng. Vui lòng thử lại.');
-    } on TimeoutException {
-      print('Yêu cầu đăng ký quá thời gian');
-      throw Exception('Yêu cầu quá thời gian. Vui lòng thử lại.');
-    } on FormatException catch (e) {
-      print('Lỗi giải mã JSON phản hồi đăng ký: $e');
-      throw Exception('Dữ liệu phản hồi đăng ký không hợp lệ.');
     } catch (e) {
-      print('Ngoại lệ khi đăng ký: $e');
+      print('❌ Register Error: $e');
       rethrow;
     }
   }
 
-  /// Đăng nhập người dùng
-  Future<Map<String, dynamic>> login(LoginDTO dto) async {
-    final url = Uri.parse('$_baseUrl/login');
+  // ✅ Get all users
+  Future<List<User>> getAllUsers({String? token}) async {
     try {
-      final response = await http
-          .post(
-            url,
-            headers: _getHeaders(),
-            body: jsonEncode(dto.toJson()),
-          )
-          .timeout(_timeoutDuration);
+      print('🔍 Getting all users...');
+      
+      final response = await http.get(
+        Uri.parse(_baseUrl),
+        headers: _getHeaders(token: token),
+      ).timeout(_timeoutDuration);
 
-      print('Trạng thái đăng nhập: ${response.statusCode}');
-      print('Nội dung phản hồi đăng nhập: ${response.body}');
-      final responseBody = jsonDecode(response.body);
+      print('👥 Users Response: ${response.statusCode}');
+      print('👥 Response Body Length: ${response.body.length}');
 
       if (response.statusCode == 200) {
-        if (responseBody is Map<String, dynamic> &&
-            responseBody.containsKey('token') &&
-            (responseBody.containsKey('user') && responseBody['user'] is Map<String,dynamic> && (responseBody['user'] as Map<String,dynamic>).containsKey('id'))
-            ) {
-          return responseBody;
-        } else {
-          throw Exception('Phản hồi đăng nhập không chứa đủ thông tin token hoặc người dùng hợp lệ.');
-        }
+        final List<dynamic> data = json.decode(response.body);
+        print('✅ Loaded ${data.length} users');
+        return data.map((json) => User.fromJson(json)).toList();
       } else {
-        throw Exception(responseBody['message'] ?? 'Đăng nhập thất bại (mã: ${response.statusCode}).');
+        throw Exception('Get users failed: ${response.statusCode} - ${response.body}');
       }
-    } on SocketException {
-      print('Không có kết nối mạng khi đăng nhập');
-      throw Exception('Không có kết nối mạng. Vui lòng thử lại.');
-    } on TimeoutException {
-      print('Yêu cầu đăng nhập quá thời gian');
-      throw Exception('Yêu cầu quá thời gian. Vui lòng thử lại.');
-    } on FormatException catch (e) {
-      print('Lỗi giải mã JSON phản hồi đăng nhập: $e');
-      throw Exception('Dữ liệu phản hồi đăng nhập không hợp lệ.');
     } catch (e) {
-      print('Ngoại lệ khi đăng nhập: $e');
+      print('❌ GetAllUsers Error: $e');
       rethrow;
     }
   }
 
-  /// Cập nhật thông tin người dùng
-  Future<bool> updateUserProfile(
-    int userId,
-    UserUpdate userUpdateData, {
-    String? oldPassword,
-    String? newPassword,
-    required String token,
-  }) async {
-    final url = Uri.parse('$_baseUrl/$userId');
-    print('UserApiService: Cập nhật profile cho userId: $userId, token: $token');
+  // ✅ FIX: Create user - match UserCreateDTO
+  Future<User> createUser(User user, String password, {String? token}) async {
     try {
-      Map<String, dynamic> requestBody = userUpdateData.toJson();
-
-      if (newPassword != null) {
-        if (oldPassword == null) {
-          print('UserApiService: Cảnh báo - NewPassword được cung cấp nhưng OldPassword là null. API có thể từ chối.');
-        }
-        requestBody['oldPassword'] = oldPassword;
-        requestBody['newPassword'] = newPassword;
-      }
-
-      if (requestBody.isEmpty) {
-        print('UserApiService: Không có dữ liệu để cập nhật.');
-        return true;
-      }
+      print('➕ Creating user: ${user.name}');
       
-      print('UserApiService: Request body cập nhật: ${json.encode(requestBody)}');
+      final userData = {
+        'name': user.name,
+        'email': user.email,
+        'password': password,
+        'role': user.role ?? 'User',
+      };
 
-      final response = await http
-          .put(
-            url,
-            headers: _getHeaders(token: token),
-            body: json.encode(requestBody),
-          )
-          .timeout(_timeoutDuration);
+      print('📤 User create data: $userData');
 
-      print('Trạng thái cập nhật profile: ${response.statusCode}');
-      print('Nội dung phản hồi cập nhật profile: ${response.body}');
+      final response = await http.post(
+        Uri.parse(_baseUrl),
+        headers: _getHeaders(token: token),
+        body: json.encode(userData),
+      ).timeout(_timeoutDuration);
+
+      print('👤 Create User Response: ${response.statusCode}');
+      print('👤 Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        return User.fromJson(data);
+      } else {
+        throw Exception('Create user failed: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      print('❌ CreateUser Error: $e');
+      rethrow;
+    }
+  }
+
+  // ✅ FIX: Update user - match UserUpdateDTO
+  Future<User> updateUser(int id, User user, {String? token}) async {
+    try {
+      print('✏️ Updating user $id');
+      
+      final userData = <String, dynamic>{
+        'name': user.name,
+        'email': user.email,
+      };
+
+      // ✅ Only add role if it's provided and not null
+      if (user.role != null && user.role!.isNotEmpty) {
+        userData['role'] = user.role;
+      }
+
+      print('📤 User update data: $userData');
+
+      final response = await http.put(
+        Uri.parse('$_baseUrl/$id'),
+        headers: _getHeaders(token: token),
+        body: json.encode(userData),
+      ).timeout(_timeoutDuration);
+
+      print('🔄 Update User Response: ${response.statusCode}');
+      print('🔄 Response Body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 204) {
-        return true;
+        print('✅ User updated successfully');
+        return user.copyWith(id: id);
       } else {
-        final responseBody = response.body.isNotEmpty ? jsonDecode(response.body) : {};
-        throw Exception(responseBody['message'] ?? 'Cập nhật thông tin thất bại (mã: ${response.statusCode}). Phản hồi: ${response.body}');
+        throw Exception('Update user failed: ${response.statusCode} - ${response.body}');
       }
-    } on SocketException {
-      print('Không có kết nối mạng khi cập nhật profile');
-      throw Exception('Không có kết nối mạng. Vui lòng thử lại.');
-    } on TimeoutException {
-      print('Yêu cầu cập nhật profile quá thời gian');
-      throw Exception('Yêu cầu quá thời gian. Vui lòng thử lại.');
-    } on FormatException catch (e) {
-      print('Lỗi giải mã JSON phản hồi cập nhật profile: $e. Body: ${e.source}');
-      throw Exception('Dữ liệu phản hồi cập nhật không hợp lệ.');
     } catch (e) {
-      print('Ngoại lệ khi cập nhật profile: $e');
+      print('❌ UpdateUser Error: $e');
       rethrow;
     }
   }
 
-  /// Lấy thông tin chi tiết của người dùng hiện tại (đã đăng nhập)
-  Future<User> getCurrentUserDetails(String token) async {
-    final url = Uri.parse('$_baseUrl/me');
-    print('UserApiService: Lấy thông tin người dùng hiện tại, token: $token');
+  // ✅ FIX: Delete user
+  Future<void> deleteUser(int userId, {String? token}) async {
+    print('🔗 Deleting user $userId');
+    
     try {
-      final response = await http
-          .get(url, headers: _getHeaders(token: token))
-          .timeout(_timeoutDuration);
+      final response = await http.delete(
+        Uri.parse('$_baseUrl/$userId'),
+        headers: _getHeaders(token: token),
+      ).timeout(_timeoutDuration);
 
-      print('Trạng thái lấy thông tin người dùng hiện tại: ${response.statusCode}');
-      print('Nội dung phản hồi lấy thông tin người dùng hiện tại: ${response.body}');
-      
-      if (response.statusCode == 200) {
-         final responseBody = jsonDecode(response.body);
-         if (responseBody is Map<String, dynamic>) {
-            return User.fromJson(responseBody);
-         } else {
-            throw Exception('Dữ liệu người dùng trả về không hợp lệ.');
-         }
+      print('❌ Delete User Response: ${response.statusCode}');
+      print('❌ Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 204 || response.statusCode == 404) {
+        print('✅ User deleted successfully');
+        return;
       } else {
-        final responseBody = response.body.isNotEmpty ? jsonDecode(response.body) : {};
-        throw Exception(responseBody['message'] ?? 'Lỗi lấy thông tin người dùng (mã: ${response.statusCode}). Phản hồi: ${response.body}');
+        throw Exception('Delete user failed: ${response.statusCode} - ${response.body}');
       }
-    } on SocketException {
-      print('Không có kết nối mạng khi lấy thông tin người dùng hiện tại');
-      throw Exception('Không có kết nối mạng. Vui lòng thử lại.');
-    } on TimeoutException {
-      print('Yêu cầu lấy thông tin người dùng hiện tại quá thời gian');
-      throw Exception('Yêu cầu quá thời gian. Vui lòng thử lại.');
-    } on FormatException catch (e) {
-      print('Lỗi giải mã JSON phản hồi thông tin người dùng hiện tại: $e. Body: ${e.source}');
-      throw Exception('Dữ liệu phản hồi người dùng không hợp lệ.');
     } catch (e) {
-      print('Ngoại lệ khi lấy thông tin người dùng hiện tại: $e');
+      print('❌ DeleteUser Error: $e');
+      rethrow;
+    }
+  }
+
+  // ✅ Other methods
+  Future<User> getUserById(int id, {String? token}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/$id'),
+        headers: _getHeaders(token: token),
+      ).timeout(_timeoutDuration);
+
+      if (response.statusCode == 200) {
+        return User.fromJson(json.decode(response.body));
+      } else {
+        throw Exception('Get user failed: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> checkEmailExists(String email) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/check-email?email=$email'),
+        headers: _getHeaders(),
+      ).timeout(_timeoutDuration);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        return data['exists'] ?? false;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> changePassword(int userId, String oldPassword, String newPassword, {String? token}) async {
+    try {
+      final userData = {
+        'oldPassword': oldPassword,
+        'newPassword': newPassword,
+      };
+
+      final response = await http.put(
+        Uri.parse('$_baseUrl/$userId'),
+        headers: _getHeaders(token: token),
+        body: json.encode(userData),
+      ).timeout(_timeoutDuration);
+
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw Exception('Đổi mật khẩu thất bại: ${response.body}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Forgot password methods
+  Future<Map<String, dynamic>> sendForgotPasswordCode(String email) async {
+    try {
+      print('📧 Sending forgot password code to: $email');
+      
+      final response = await http.post(
+        Uri.parse('$_baseUrl/forgot-password'),
+        headers: _getHeaders(),
+        body: json.encode({
+          'email': email,
+        }),
+      ).timeout(_timeoutDuration);
+
+      print('📧 Forgot Password Response: ${response.statusCode}');
+      print('📧 Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        final errorData = json.decode(response.body);
+        throw Exception(errorData['message'] ?? 'Gửi mã thất bại');
+      }
+    } catch (e) {
+      print('❌ Send Reset Code Error: $e');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> verifyResetCode(String email, String code) async {
+    try {
+      print('🔐 Verifying reset code for: $email');
+      
+      final response = await http.post(
+        Uri.parse('$_baseUrl/verify-reset-code'),
+        headers: _getHeaders(),
+        body: json.encode({
+          'email': email,
+          'code': code,
+        }),
+      ).timeout(_timeoutDuration);
+
+      print('🔐 Verify Code Response: ${response.statusCode}');
+      print('🔐 Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        final errorData = json.decode(response.body);
+        throw Exception(errorData['message'] ?? 'Mã xác nhận không đúng');
+      }
+    } catch (e) {
+      print('❌ Verify Reset Code Error: $e');
       rethrow;
     }
   }

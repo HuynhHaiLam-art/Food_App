@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:food_app/models/product.dart';
-import 'package:food_app/utils/formatters.dart';
+import 'package:food_app/themes/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -9,7 +10,8 @@ class ProductCard extends StatelessWidget {
   final int cartCount;
   final VoidCallback onFavorite;
   final VoidCallback onAdd;
-  final VoidCallback? onRemove; // Có thể null nếu cartCount = 0
+  final VoidCallback? onRemove;
+  final VoidCallback? onTap; // ✅ Thêm callback cho navigation
 
   const ProductCard({
     super.key,
@@ -19,158 +21,298 @@ class ProductCard extends StatelessWidget {
     required this.onFavorite,
     required this.onAdd,
     this.onRemove,
+    this.onTap, // ✅ Thêm parameter
   });
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(28),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(28),
-        splashColor: Colors.orange.withOpacity(0.08),
-        highlightColor: Colors.orange.withOpacity(0.04),
-        onTap: null, // Để có hiệu ứng splash khi tap vào card
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.07),
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.12),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
-              )
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Hình ảnh sản phẩm
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-                child: CachedNetworkImage(
-                  imageUrl: product.imageUrl ?? 'https://via.placeholder.com/300x200.png?text=No+Image',
-                  height: MediaQuery.of(context).size.width < 600 ? 120 : 180,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(strokeWidth: 2.0, color: Colors.white54),
-                  ),
-                  errorWidget: (context, url, error) =>
-                      const Icon(Icons.fastfood, size: 80, color: Colors.white24),
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              // Tên sản phẩm
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  product.name ?? 'N/A',
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
-              // Mô tả ngắn (nếu có)
-              if (product.description != null && product.description!.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-                  child: Text(
-                    product.description!,
-                    style: const TextStyle(color: Colors.white54, fontSize: 13),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-
-              const Spacer(),
-
-              // Giá, nút yêu thích và nút thêm/bớt giỏ hàng
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Nút yêu thích
-                    Material(
-                      color: Colors.white.withOpacity(0.1),
-                      shape: const CircleBorder(),
-                      child: IconButton(
-                        icon: Icon(
-                          isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: isFavorite ? Colors.redAccent : Colors.white,
-                        ),
-                        onPressed: onFavorite,
-                        iconSize: 20,
-                        splashRadius: 20,
-                        tooltip: isFavorite ? 'Bỏ yêu thích' : 'Yêu thích',
-                      ),
-                    ),
-
-                    // Giá sản phẩm
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          formatCurrency(product.price),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
+    return Container(
+      decoration: AppTheme.glassMorphism,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: onTap, // ✅ Sử dụng callback từ parent
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ✨ Image Container with Gradient Overlay
+                Expanded(
+                  flex: 3,
+                  child: Stack(
+                    children: [
+                      // Product Image
+                      Container(
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
                           ),
                         ),
-                      ),
-                    ),
-
-                    // Nút thêm/bớt giỏ hàng
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (cartCount > 0 && onRemove != null)
-                          Material(
-                            color: Colors.white.withOpacity(0.1),
-                            shape: const CircleBorder(),
-                            child: IconButton(
-                              icon: const Icon(Icons.remove, color: Colors.white),
-                              onPressed: onRemove,
-                              iconSize: 20,
-                              splashRadius: 20,
-                              tooltip: 'Bớt khỏi giỏ',
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: product.imageUrl ??
+                                'https://via.placeholder.com/300x200.png?text=No+Image',
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              color: AppTheme.surfaceColor,
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.0,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    AppTheme.primaryOrange,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              color: AppTheme.surfaceColor,
+                              child: const Icon(
+                                Icons.fastfood,
+                                size: 48,
+                                color: Colors.white24,
+                              ),
                             ),
                           ),
-                        if (cartCount > 0)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                        ),
+                      ),
+
+                      // Gradient Overlay
+                      Container(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Color(0x40000000),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Favorite Button
+                      Positioned(
+                        top: 12,
+                        right: 12,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.6),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              isFavorite ? Icons.favorite : Icons.favorite_border,
+                              color: isFavorite ? Colors.red : Colors.white,
+                              size: 20,
+                            ),
+                            onPressed: onFavorite,
+                            constraints: const BoxConstraints(
+                              minWidth: 36,
+                              minHeight: 36,
+                            ),
+                            padding: EdgeInsets.zero,
+                          ),
+                        ),
+                      ),
+
+                      // Cart Count Badge
+                      if (cartCount > 0)
+                        Positioned(
+                          top: 12,
+                          left: 12,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              gradient: AppTheme.buttonGradient,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppTheme.primaryOrange.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
                             child: Text(
                               '$cartCount',
-                              style: const TextStyle(
-                                  color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                              style: GoogleFonts.inter(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        Material(
-                          color: Colors.white.withOpacity(0.1),
-                          shape: const CircleBorder(),
-                          child: IconButton(
-                            icon: const Icon(Icons.add, color: Colors.white),
-                            onPressed: onAdd,
-                            iconSize: 20,
-                            splashRadius: 20,
-                            tooltip: 'Thêm vào giỏ',
+                        ),
+
+                      // ✅ Tap indicator overlay
+                      if (onTap != null)
+                        Positioned(
+                          bottom: 8,
+                          right: 8,
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.6),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.visibility,
+                              color: Colors.white70,
+                              size: 16,
+                            ),
                           ),
+                        ),
+                    ],
+                  ),
+                ),
+
+                // ✨ Content Section
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Product Name
+                        Text(
+                          product.name ?? 'N/A',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        // Description
+                        if (product.description != null &&
+                            product.description!.isNotEmpty)
+                          Text(
+                            product.description!,
+                            style: GoogleFonts.inter(
+                              color: Colors.white60,
+                              fontSize: 12,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+
+                        const Spacer(),
+
+                        // Price and Add Button Row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Price
+                            Text(
+                              '${(product.price ?? 0.0).toStringAsFixed(0)} VNĐ',
+                              style: GoogleFonts.poppins(
+                                color: AppTheme.accentYellow,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            // Add/Remove Buttons
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (cartCount > 0 && onRemove != null)
+                                  _ActionButton(
+                                    icon: Icons.remove,
+                                    onPressed: onRemove!,
+                                    isRemove: true,
+                                  ),
+
+                                if (cartCount > 0)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    child: Text(
+                                      '$cartCount',
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+
+                                _ActionButton(
+                                  icon: Icons.add,
+                                  onPressed: onAdd,
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+  final bool isRemove;
+
+  const _ActionButton({
+    required this.icon,
+    required this.onPressed,
+    this.isRemove = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // ✅ Stop event propagation
+        onPressed();
+      },
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          gradient: isRemove
+              ? const LinearGradient(colors: [Colors.red, Colors.redAccent])
+              : AppTheme.buttonGradient,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: (isRemove ? Colors.red : AppTheme.primaryOrange)
+                  .withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Icon(
+          icon,
+          color: Colors.white,
+          size: 18,
         ),
       ),
     );

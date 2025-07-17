@@ -1,42 +1,53 @@
 // Cần thiết cho việc so sánh bằng jsonEncode nếu có list/map phức tạp
 
 class Promotion {
-  final int id;
-  final String code;
+  final int? id;
+  final String? code;
   final String? description;
-  final int? discountPercent;
-  final DateTime startDate;
-  final DateTime endDate;
+  final String? type;
+  final double? discountValue;
+  final bool? isActive;
+  final DateTime? startDate;
+  final DateTime? endDate;
 
   Promotion({
-    required this.id,
-    required this.code,
+    this.id,
+    this.code,
     this.description,
-    this.discountPercent,
-    required this.startDate,
-    required this.endDate,
+    this.type,
+    this.discountValue,
+    this.isActive,
+    this.startDate,
+    this.endDate,
   });
 
   factory Promotion.fromJson(Map<String, dynamic> json) {
     return Promotion(
-      id: json['id'] as int? ?? 0,
-      code: json['code'] as String? ?? '',
+      id: json['id'] as int?,
+      code: json['code'] as String?,
       description: json['description'] as String?,
-      discountPercent: json['discountPercent'] as int?,
-      startDate: DateTime.tryParse(json['startDate'] as String? ?? '') ?? DateTime.now(),
-      endDate: DateTime.tryParse(json['endDate'] as String? ?? '') ?? DateTime.now(),
+      type: json['type'] as String?,
+      discountValue: (json['discountValue'] as num?)?.toDouble(),
+      isActive: json['isActive'] as bool?,
+      startDate: json['startDate'] != null 
+        ? DateTime.tryParse(json['startDate'] as String)
+        : null,
+      endDate: json['endDate'] != null 
+        ? DateTime.tryParse(json['endDate'] as String)
+        : null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{
-      'id': id,
-      'code': code,
-      'startDate': startDate.toIso8601String(),
-      'endDate': endDate.toIso8601String(),
-    };
+    final data = <String, dynamic>{};
+    if (id != null) data['id'] = id;
+    if (code != null) data['code'] = code;
     if (description != null) data['description'] = description;
-    if (discountPercent != null) data['discountPercent'] = discountPercent;
+    if (type != null) data['type'] = type;
+    if (discountValue != null) data['discountValue'] = discountValue;
+    if (isActive != null) data['isActive'] = isActive;
+    if (startDate != null) data['startDate'] = startDate!.toIso8601String();
+    if (endDate != null) data['endDate'] = endDate!.toIso8601String();
     return data;
   }
 
@@ -44,7 +55,9 @@ class Promotion {
     int? id,
     String? code,
     String? description,
-    int? discountPercent,
+    String? type,
+    double? discountValue,
+    bool? isActive,
     DateTime? startDate,
     DateTime? endDate,
   }) {
@@ -52,52 +65,11 @@ class Promotion {
       id: id ?? this.id,
       code: code ?? this.code,
       description: description ?? this.description,
-      discountPercent: discountPercent ?? this.discountPercent,
+      type: type ?? this.type,
+      discountValue: discountValue ?? this.discountValue,
+      isActive: isActive ?? this.isActive,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
     );
-  }
-
-  // (Tùy chọn) Getter để kiểm tra xem khuyến mãi có còn hiệu lực không
-  bool get isCurrentlyActive {
-    final now = DateTime.now();
-    // Giả sử không có trường isActive riêng, chỉ dựa vào ngày
-    return now.isAfter(startDate) && now.isBefore(endDate);
-  }
-
-  // (Tùy chọn) Getter để hiển thị phần trăm giảm giá một cách thân thiện
-  String? get displayDiscount {
-    if (discountPercent == null || discountPercent! <= 0) {
-      return null;
-    }
-    return '$discountPercent%';
-  }
-
-  @override
-  String toString() {
-    return 'Promotion(id: $id, code: $code, description: $description, discountPercent: $discountPercent, startDate: $startDate, endDate: $endDate)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is Promotion &&
-        other.id == id &&
-        other.code == code &&
-        other.description == description &&
-        other.discountPercent == discountPercent &&
-        other.startDate == startDate &&
-        other.endDate == endDate;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        code.hashCode ^
-        description.hashCode ^
-        discountPercent.hashCode ^
-        startDate.hashCode ^
-        endDate.hashCode;
   }
 }

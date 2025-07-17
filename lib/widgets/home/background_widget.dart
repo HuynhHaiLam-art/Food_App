@@ -1,35 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:food_app/themes/app_theme.dart';
 
 class BackgroundWidget extends StatelessWidget {
   final Widget child;
-  final Color overlayColor;
-  final String imagePath;
+  final bool hasPattern;
 
   const BackgroundWidget({
     super.key,
     required this.child,
-    this.overlayColor = const Color.fromRGBO(0, 0, 0, 0.45),
-    this.imagePath = 'assets/images/background.jpg',
+    this.hasPattern = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-          onError: (exception, stackTrace) {
-            // Nếu ảnh lỗi, chỉ dùng màu nền
-          },
-        ),
+        gradient: AppTheme.primaryGradient,
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: overlayColor,
-        ),
-        child: child,
-      ),
+      child: hasPattern
+          ? Stack(
+              children: [
+                // Geometric Pattern
+                Positioned.fill(
+                  child: CustomPaint(
+                    painter: _GeometricPatternPainter(),
+                  ),
+                ),
+                // Content
+                child,
+              ],
+            )
+          : child,
     );
   }
+}
+
+class _GeometricPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.02)
+      ..style = PaintingStyle.fill;
+
+    // Draw subtle geometric pattern
+    for (int i = 0; i < size.width; i += 60) {
+      for (int j = 0; j < size.height; j += 60) {
+        canvas.drawCircle(
+          Offset(i.toDouble(), j.toDouble()),
+          2,
+          paint,
+        );
+      }
+    }
+
+    // Draw diagonal lines
+    final linePaint = Paint()
+      ..color = Colors.white.withOpacity(0.01)
+      ..strokeWidth = 1;
+
+    for (int i = 0; i < size.width + size.height; i += 100) {
+      canvas.drawLine(
+        Offset(i.toDouble(), 0),
+        Offset(i - size.height, size.height),
+        linePaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

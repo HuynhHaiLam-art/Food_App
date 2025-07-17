@@ -73,8 +73,12 @@ class FavoriteScreen extends StatelessWidget {
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                        formatCurrency(product.price),
-                        style: const TextStyle(color: Colors.white70),
+                        '${(product.price ?? 0.0).toStringAsFixed(0)} VNĐ', // Sử dụng ?? 0.0
+                        style: const TextStyle(
+                          color: Colors.amber,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       trailing: IconButton(
                         icon: const Icon(Icons.favorite, color: Colors.pinkAccent),
