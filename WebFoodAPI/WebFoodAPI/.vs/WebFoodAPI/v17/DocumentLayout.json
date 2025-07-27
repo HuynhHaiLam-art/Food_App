@@ -1,0 +1,556 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\dbappfoodcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\dbappfoodcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\controllers\\foodcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\controllers\\foodcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\controllers\\orderdetailcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\controllers\\orderdetailcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\controllers\\paymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\controllers\\paymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\controllers\\promotioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\controllers\\promotioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\webfoodapi.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\webfoodapi.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\webfoodapi.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\webfoodapi.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\controllers\\ordercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\orderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\orderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\promotiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\promotiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\promotion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\promotion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\paymenturlresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\paymenturlresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\paymentrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\paymentrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\ordercreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\ordercreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\orderdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\orderdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\orderdetaildto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\orderdetaildto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\orderdetailcreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\orderdetailcreatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\food.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\food.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\fooddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\fooddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\categorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\categorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\cartitemdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\cartitemdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\models\\cartitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\models\\cartitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|d:\\food_app\\webfoodapi\\webfoodapi\\webfoodapi\\controllers\\cartitemcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EB051E6A-B2DD-4FA5-B13A-1834DCA3A05A}|WebFoodAPI\\WebFoodAPI.csproj|solutionrelative:webfoodapi\\controllers\\cartitemcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 197,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "OrderDetailController.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\OrderDetailController.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Controllers\\OrderDetailController.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\OrderDetailController.cs",
+              "RelativeToolTip": "WebFoodAPI\\Controllers\\OrderDetailController.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAA2wGsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T09:41:53.22Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FoodController.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\FoodController.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Controllers\\FoodController.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\FoodController.cs",
+              "RelativeToolTip": "WebFoodAPI\\Controllers\\FoodController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGoAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T06:06:25.052Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UserDTO.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\UserDTO.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\UserDTO.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\UserDTO.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\UserDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T10:14:30.318Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "User.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\User.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\User.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\User.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T07:27:59.686Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DbappFoodContext.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\DbappFoodContext.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\DbappFoodContext.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\DbappFoodContext.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\DbappFoodContext.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAArwBwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T05:54:52.819Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PaymentController.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\PaymentController.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Controllers\\PaymentController.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\PaymentController.cs",
+              "RelativeToolTip": "WebFoodAPI\\Controllers\\PaymentController.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAQwBoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T11:38:52.58Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PromotionController.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\PromotionController.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Controllers\\PromotionController.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\PromotionController.cs",
+              "RelativeToolTip": "WebFoodAPI\\Controllers\\PromotionController.cs",
+              "ViewState": "AgIAAHwAAAAAAAAAAAAkwAoAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T09:42:27.85Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "WeatherForecastController.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\WeatherForecastController.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Controllers\\WeatherForecastController.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\WeatherForecastController.cs",
+              "RelativeToolTip": "WebFoodAPI\\Controllers\\WeatherForecastController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T10:13:48.921Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Controllers\\UserController.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\UserController.cs",
+              "RelativeToolTip": "WebFoodAPI\\Controllers\\UserController.cs",
+              "ViewState": "AgIAABABAAAAAAAAAAAUwPsAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T09:37:51.441Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "WebFoodAPI",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI.csproj",
+              "RelativeDocumentMoniker": "WebFoodAPI\\WebFoodAPI.csproj",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI.csproj",
+              "RelativeToolTip": "WebFoodAPI\\WebFoodAPI.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-07-19T03:33:04.924Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\appsettings.json",
+              "RelativeDocumentMoniker": "WebFoodAPI\\appsettings.json",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\appsettings.json",
+              "RelativeToolTip": "WebFoodAPI\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAACFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-05-24T05:59:04.945Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Promotion.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\Promotion.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\Promotion.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\Promotion.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\Promotion.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAkwBcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T07:27:55.31Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "OrderController.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\OrderController.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Controllers\\OrderController.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\OrderController.cs",
+              "RelativeToolTip": "WebFoodAPI\\Controllers\\OrderController.cs",
+              "ViewState": "AgIAAAgCAAAAAAAAAAAxwBUCAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T09:41:28.097Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Order.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\Order.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\Order.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\Order.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\Order.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-16T11:34:56.601Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "WebFoodAPI.http",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI.http",
+              "RelativeDocumentMoniker": "WebFoodAPI\\WebFoodAPI.http",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI.http",
+              "RelativeToolTip": "WebFoodAPI\\WebFoodAPI.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2025-05-24T06:11:35.205Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Program.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Program.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Program.cs",
+              "RelativeToolTip": "WebFoodAPI\\Program.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAADUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T05:59:24.947Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "OrderDTO.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\OrderDTO.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\OrderDTO.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\OrderDTO.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\OrderDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T10:17:22.322Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "PromotionDTO.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\PromotionDTO.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\PromotionDTO.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\PromotionDTO.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\PromotionDTO.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAA5wBEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T10:25:11.686Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "OrderDetail.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\OrderDetail.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\OrderDetail.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\OrderDetail.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\OrderDetail.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T11:03:43.772Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "PaymentRequest.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\PaymentRequest.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\PaymentRequest.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\PaymentRequest.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\PaymentRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T11:22:55.443Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "PaymentUrlResponse.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\PaymentUrlResponse.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\PaymentUrlResponse.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\PaymentUrlResponse.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\PaymentUrlResponse.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T11:34:12.617Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "OrderDetailDTO.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\OrderDetailDTO.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\OrderDetailDTO.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\OrderDetailDTO.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\OrderDetailDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T10:24:59.964Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "OrderCreateDTO.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\OrderCreateDTO.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\OrderCreateDTO.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\OrderCreateDTO.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\OrderCreateDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T09:39:26.713Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "OrderDetailCreateDTO.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\OrderDetailCreateDTO.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\OrderDetailCreateDTO.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\OrderDetailCreateDTO.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\OrderDetailCreateDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T09:39:07.12Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Food.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\Food.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\Food.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\Food.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\Food.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAYwAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T06:05:31.514Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "FoodDTO.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\FoodDTO.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\FoodDTO.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\FoodDTO.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\FoodDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T07:00:21.526Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "CategoryDTO.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\CategoryDTO.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\CategoryDTO.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\CategoryDTO.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\CategoryDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T10:20:47.976Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "LoginDTO.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\LoginDTO.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\LoginDTO.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\LoginDTO.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\LoginDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T18:23:23.983Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "Category.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\Category.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\Category.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\Category.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\Category.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T07:26:48.779Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "CartItemDTO.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\CartItemDTO.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\CartItemDTO.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\CartItemDTO.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\CartItemDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T10:15:24.633Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "CartItem.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\CartItem.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Models\\CartItem.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Models\\CartItem.cs",
+              "RelativeToolTip": "WebFoodAPI\\Models\\CartItem.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAuwAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-24T06:54:43.622Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "CategoryController.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\CategoryController.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Controllers\\CategoryController.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\CategoryController.cs",
+              "RelativeToolTip": "WebFoodAPI\\Controllers\\CategoryController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T09:40:57.681Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "CartItemController.cs",
+              "DocumentMoniker": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\CartItemController.cs",
+              "RelativeDocumentMoniker": "WebFoodAPI\\Controllers\\CartItemController.cs",
+              "ToolTip": "D:\\Food_App\\WebFoodAPI\\WebFoodAPI\\WebFoodAPI\\Controllers\\CartItemController.cs",
+              "RelativeToolTip": "WebFoodAPI\\Controllers\\CartItemController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-31T09:40:09.337Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -2,9 +2,10 @@ class OrderDetail {
   int? id;
   int? orderId;
   int? foodId;
-  String? foodName; // Field này từ JOIN với bảng Foods
+  String? foodName;
   int? quantity;
   double? unitPrice;
+  String? addOns; // <-- thêm dòng này
 
   OrderDetail({
     this.id,
@@ -13,6 +14,7 @@ class OrderDetail {
     this.foodName,
     this.quantity,
     this.unitPrice,
+    this.addOns,
   });
 
   factory OrderDetail.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class OrderDetail {
       foodName: json['foodName'] as String?,
       quantity: json['quantity'] as int?,
       unitPrice: (json['unitPrice'] as num?)?.toDouble(),
+      addOns: json['addOns'] as String?,
     );
   }
 
@@ -34,6 +37,7 @@ class OrderDetail {
     if (foodName != null) data['foodName'] = foodName;
     if (quantity != null) data['quantity'] = quantity;
     if (unitPrice != null) data['unitPrice'] = unitPrice;
+    if (addOns != null) data['addOns'] = addOns;
     return data;
   }
 }

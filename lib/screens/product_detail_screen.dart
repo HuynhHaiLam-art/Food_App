@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/product.dart';
+import '../models/addon.dart';
 import '../providers/cart_provider.dart';
 import '../providers/favorite_provider.dart';
 import '../utils/formatters.dart';
-import '../themes/app_theme.dart';
 import '../widgets/home/background_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -26,6 +26,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+
+  // Add-on mẫu
+  final List<AddOn> addOns = [
+    AddOn(name: 'Khoai tây chiên', price: 15000),
+    AddOn(name: 'Phô mai lát', price: 10000),
+    AddOn(name: 'Nước ngọt', price: 12000),
+  ];
 
   @override
   void initState() {
@@ -60,9 +67,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     super.dispose();
   }
 
+  /// So sánh hai list AddOn (bắt chước static _compareAddOns trong CartProvider)
+  bool compareAddOns(List<AddOn> a, List<AddOn> b) {
+    if (a.length != b.length) return false;
+    for (final addon in a) {
+      if (!b.any((other) => other.name == addon.name && other.price == addon.price)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final productId = widget.product.id;
+    final product = widget.product;
+    final productId = product.id;
     if (productId == null) {
       return Scaffold(
         body: BackgroundWidget(
@@ -127,9 +146,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                   fit: StackFit.expand,
                   children: [
                     Hero(
-                      tag: 'product_${widget.product.id}',
+                      tag: 'product_$productId',
                       child: CachedNetworkImage(
-                        imageUrl: widget.product.imageUrl ??
+                        imageUrl: product.imageUrl ??
                             'https://via.placeholder.com/400x300.png?text=No+Image',
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
@@ -211,18 +230,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                             children: [
                               // Product Name
                               Text(
-                                widget.product.name ?? 'N/A',
+                                product.name ?? 'N/A',
                                 style: GoogleFonts.poppins(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
                               ),
-                              
                               const SizedBox(height: 8),
-                              
-                              // Category
-                              if (widget.product.categoryName != null)
+                              if (product.categoryName != null)
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
@@ -235,7 +251,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
-                                    widget.product.categoryName!,
+                                    product.categoryName!,
                                     style: GoogleFonts.inter(
                                       color: Colors.white,
                                       fontSize: 12,
@@ -243,24 +259,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                     ),
                                   ),
                                 ),
-
                               const SizedBox(height: 16),
-
-                              // Price
                               Text(
-                                formatCurrency(widget.product.price ?? 0.0),
+                                formatCurrency(product.price ?? 0.0),
                                 style: GoogleFonts.poppins(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                   color: const Color(0xFFFFC107),
                                 ),
                               ),
-
                               const SizedBox(height: 24),
-
-                              // Description
-                              if (widget.product.description != null &&
-                                  widget.product.description!.isNotEmpty) ...[
+                              if (product.description != null &&
+                                  product.description!.isNotEmpty) ...[
                                 Text(
                                   'Mô tả',
                                   style: GoogleFonts.poppins(
@@ -271,7 +281,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  widget.product.description!,
+                                  product.description!,
                                   style: GoogleFonts.inter(
                                     fontSize: 16,
                                     color: Colors.white70,
@@ -281,30 +291,72 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                 const SizedBox(height: 24),
                               ],
 
-                              // Quantity and Add to Cart Section
+                              // --- Add-ons Section ---
+                              Text(
+                                'Chọn sản phẩm phụ',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              ...addOns.map((addon) => CheckboxListTile(
+                                    value: addon.selected,
+                                    onChanged: (checked) {
+                                      setState(() {
+                                        addon.selected = checked ?? false;
+                                      });
+                                    },
+                                    title: Text(
+                                      '${addon.name} (+${addon.price}₫)',
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
+                                    controlAffinity: ListTileControlAffinity.leading,
+                                    activeColor: Colors.orange,
+                                    contentPadding: EdgeInsets.zero,
+                                  )),
+                              const SizedBox(height: 20),
+
+                              // --- Quantity and Add to Cart Section ---
                               Consumer<CartProvider>(
                                 builder: (context, cartProvider, _) {
-                                  final cartCount = cartProvider.cartCounts[productId] ?? 0;
-                                  
+                                  // Lấy số lượng CartItem đúng theo productId và addOns đã chọn
+                                  final selectedAddOns =
+                                      addOns.where((a) => a.selected).toList();
+                                  final cartItem = cartProvider.cartItems.firstWhere(
+                                    (item) =>
+                                        item.product.id == productId &&
+                                        compareAddOns(item.addOns, selectedAddOns),
+                                    orElse: () => CartItem(product: product),
+                                  );
+                                  final cartCount = cartItem.quantity;
+
                                   return Row(
                                     children: [
-                                      // Quantity Controls
                                       if (cartCount > 0) ...[
                                         _QuantityButton(
                                           icon: Icons.remove,
-                                          onPressed: () => cartProvider.removeFromCart(productId),
+                                          onPressed: () {
+                                            cartProvider.removeFromCart(
+                                              product,
+                                              addOns: selectedAddOns,
+                                            );
+                                          },
                                           isDecrease: true,
                                         ),
-                                        
                                         Container(
-                                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 16),
                                           padding: const EdgeInsets.symmetric(
                                             horizontal: 16,
                                             vertical: 8,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: Colors.white.withOpacity(0.1),
-                                            borderRadius: BorderRadius.circular(12),
+                                            color:
+                                                Colors.white.withOpacity(0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
                                           ),
                                           child: Text(
                                             '$cartCount',
@@ -316,19 +368,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                           ),
                                         ),
                                       ],
-                                      
-                                      // Add Button
                                       Expanded(
                                         child: Container(
                                           height: 56,
                                           decoration: BoxDecoration(
                                             gradient: const LinearGradient(
-                                              colors: [Color(0xFFFF6B35), Color(0xFFFF8F65)],
+                                              colors: [
+                                                Color(0xFFFF6B35),
+                                                Color(0xFFFF8F65)
+                                              ],
                                             ),
-                                            borderRadius: BorderRadius.circular(16),
+                                            borderRadius:
+                                                BorderRadius.circular(16),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: const Color(0xFFFF6B35).withOpacity(0.3),
+                                                color: const Color(0xFFFF6B35)
+                                                    .withOpacity(0.3),
                                                 blurRadius: 15,
                                                 offset: const Offset(0, 6),
                                               ),
@@ -337,26 +392,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                           child: Material(
                                             color: Colors.transparent,
                                             child: InkWell(
-                                              borderRadius: BorderRadius.circular(16),
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
                                               onTap: () {
-                                                cartProvider.addToCart(widget.product);
-                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                cartProvider.addToCart(
+                                                  product,
+                                                  addOns: selectedAddOns,
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
                                                   SnackBar(
                                                     content: Text(
-                                                      'Đã thêm ${widget.product.name} vào giỏ hàng',
+                                                      'Đã thêm ${product.name}${selectedAddOns.isNotEmpty ? ' (+${selectedAddOns.map((a) => a.name).join(", ")})' : ''} vào giỏ hàng',
                                                       style: GoogleFonts.inter(),
                                                     ),
-                                                    backgroundColor: const Color(0xFFFF6B35),
-                                                    behavior: SnackBarBehavior.floating,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(12),
+                                                    backgroundColor:
+                                                        const Color(0xFFFF6B35),
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12),
                                                     ),
                                                   ),
                                                 );
                                               },
                                               child: Center(
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     const Icon(
                                                       Icons.add_shopping_cart,
@@ -365,11 +431,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                                     ),
                                                     const SizedBox(width: 8),
                                                     Text(
-                                                      cartCount > 0 ? 'Thêm nữa' : 'Thêm vào giỏ',
-                                                      style: GoogleFonts.poppins(
+                                                      cartCount > 0
+                                                          ? 'Thêm nữa'
+                                                          : 'Thêm vào giỏ',
+                                                      style:
+                                                          GoogleFonts.poppins(
                                                         color: Colors.white,
                                                         fontSize: 16,
-                                                        fontWeight: FontWeight.w600,
+                                                        fontWeight:
+                                                            FontWeight.w600,
                                                       ),
                                                     ),
                                                   ],
@@ -418,12 +488,14 @@ class _QuantityButton extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: isDecrease
             ? const LinearGradient(colors: [Colors.red, Colors.redAccent])
-            : const LinearGradient(colors: [Color(0xFFFF6B35), Color(0xFFFF8F65)]),
+            : const LinearGradient(
+                colors: [Color(0xFFFF6B35), Color(0xFFFF8F65)]),
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: (isDecrease ? Colors.red : const Color(0xFFFF6B35))
-                .withOpacity(0.3),
+            color:
+                (isDecrease ? Colors.red : const Color(0xFFFF6B35))
+                    .withOpacity(0.3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

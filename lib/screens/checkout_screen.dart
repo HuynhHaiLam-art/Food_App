@@ -19,12 +19,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
   final _noteController = TextEditingController();
-  final _promoCodeController = TextEditingController(); // ✅ THÊM
-  
+  final _promoCodeController = TextEditingController();
+
   bool _isLoading = false;
   String _selectedPaymentMethod = 'cash';
-  
-  // ✅ THÊM: Biến cho promotion
+
   String? _appliedPromoCode;
   double _discountPercent = 0.0;
 
@@ -33,18 +32,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _addressController.dispose();
     _phoneController.dispose();
     _noteController.dispose();
-    _promoCodeController.dispose(); // ✅ THÊM
+    _promoCodeController.dispose();
     super.dispose();
   }
 
-  // ✅ THÊM: Function áp dụng mã khuyến mãi
   void _applyPromoCode() {
     final code = _promoCodeController.text.trim().toUpperCase();
     if (code.isEmpty) return;
-    
+
     double discountPercent = 0.0;
     String promoDescription = '';
-    
+
     switch (code) {
       case 'GIAM10':
         discountPercent = 10.0;
@@ -83,12 +81,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         );
         return;
     }
-    
+
     setState(() {
       _appliedPromoCode = code;
       _discountPercent = discountPercent;
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -105,7 +103,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  // ✅ THÊM: Function xóa mã
   void _removePromoCode() {
     setState(() {
       _appliedPromoCode = null;
@@ -114,7 +111,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     });
   }
 
-  // ✅ THÊM: Tính tổng tiền sau giảm giá
   double _calculateFinalTotal(double originalTotal) {
     if (_discountPercent > 0) {
       return originalTotal * (1 - _discountPercent / 100);
@@ -122,7 +118,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return originalTotal;
   }
 
-  // ✅ THÊM: Tính số tiền giảm
   double _calculateDiscountAmount(double originalTotal) {
     return originalTotal * (_discountPercent / 100);
   }
@@ -137,45 +132,47 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
-      
+
       final currentUser = authProvider.currentUser;
       final token = authProvider.token;
-      
+
       if (currentUser?.id == null) {
         throw Exception('Vui lòng đăng nhập để đặt hàng');
       }
 
-      final orderDetails = cartProvider.items.entries.map((entry) {
-        final product = entry.key;
-        final quantity = entry.value;
+      // Dùng cartItems để lấy đúng thông tin gồm addOns cho từng sản phẩm
+      final orderDetails = cartProvider.cartItems.map((cartItem) {
         return order_models.OrderDetail(
-          foodId: product.id,
-          quantity: quantity,
-          unitPrice: product.price ?? 0.0,
+          foodId: cartItem.product.id,
+          foodName: cartItem.product.name,
+          quantity: cartItem.quantity,
+          unitPrice: (cartItem.product.price ?? 0) +
+              cartItem.addOns.fold(0, (sum, addon) => sum + addon.price),
+          // Nếu backend hỗ trợ addOns, thêm trường này:
+          // addOns: cartItem.addOns.isNotEmpty ? cartItem.addOns.map((a) => a.name).join(', ') : null,
         );
       }).toList();
 
-      // ✅ CẬP NHẬT: Sử dụng tổng tiền sau giảm giá
       final originalTotal = cartProvider.totalPrice;
       final finalTotal = _calculateFinalTotal(originalTotal);
 
       final order = Order(
         userId: currentUser!.id,
         orderDate: DateTime.now(),
-        totalAmount: finalTotal, // ✅ Tổng tiền sau giảm
+        totalAmount: finalTotal,
         status: 'Pending',
         address: _addressController.text.trim(),
-        phone: _phoneController.text.trim(), // ✅ THÊM phone
-        note: _appliedPromoCode != null // ✅ Thêm mã KM vào note
+        phone: _phoneController.text.trim(),
+        note: _appliedPromoCode != null
             ? '${_noteController.text.trim()}\nMã KM: $_appliedPromoCode (${_discountPercent.toInt()}%)'
             : _noteController.text.trim(),
         orderDetails: orderDetails,
       );
 
       final createdOrder = await OrderApiService().addOrder(order, token: token);
-      
+
       cartProvider.clearCart();
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -193,7 +190,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
         );
-        
+
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } catch (e) {
@@ -226,11 +223,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
       builder: (context, cartProvider, child) {
-        // ✅ Tính toán giá trị
         final originalTotal = cartProvider.totalPrice;
         final discountAmount = _calculateDiscountAmount(originalTotal);
         final finalTotal = _calculateFinalTotal(originalTotal);
-        
+
         return BackgroundWidget(
           child: Scaffold(
             backgroundColor: Colors.transparent,
@@ -306,13 +302,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Items list
-                          ...cartProvider.items.entries.map((entry) {
-                            final product = entry.key;
-                            final quantity = entry.value;
-                            final itemTotal = (product.price ?? 0.0) * quantity;
-                            
+                          ...cartProvider.cartItems.map((cartItem) {
+                            final product = cartItem.product;
+                            final quantity = cartItem.quantity;
+                            final addOns = cartItem.addOns;
+                            final itemTotal = cartItem.totalPrice;
+
                             return Container(
                               margin: const EdgeInsets.symmetric(vertical: 6),
                               padding: const EdgeInsets.all(12),
@@ -348,7 +345,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           ),
                                   ),
                                   const SizedBox(width: 12),
-                                  
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -369,10 +365,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             fontSize: 14,
                                           ),
                                         ),
+                                        if (addOns.isNotEmpty)
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4.0),
+                                            child: Text(
+                                              'Đã chọn: ${addOns.map((a) => a.name).join(", ")}',
+                                              style: const TextStyle(
+                                                color: Colors.orange,
+                                                fontSize: 13,
+                                                fontStyle: FontStyle.italic,
+                                              ),
+                                            ),
+                                          ),
                                       ],
                                     ),
                                   ),
-                                  
                                   Text(
                                     '${itemTotal.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} ₫',
                                     style: const TextStyle(
@@ -384,8 +391,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 ],
                               ),
                             );
-                          }).toList(),
-                          
+                          }),
+
                           const SizedBox(height: 16),
                           Container(
                             height: 1,
@@ -400,8 +407,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          
-                          // ✅ CẬP NHẬT: Total với discount breakdown
+
+                          // Total with discount breakdown
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
@@ -436,8 +443,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     ),
                                   ],
                                 ),
-                                
-                                // ✅ Hiển thị discount nếu có
                                 if (_discountPercent > 0) ...[
                                   const SizedBox(height: 8),
                                   Row(
@@ -467,8 +472,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   ),
                                   const SizedBox(height: 8),
                                 ],
-                                
-                                // Tổng cộng
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -496,10 +499,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
 
-                    // ✅ NEW: Promotion Section
+                    // Promotion Section
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -541,8 +544,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          
-                          // Hiển thị mã có sẵn
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
@@ -558,8 +559,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          
-                          // Mã đã áp dụng hoặc input
                           if (_appliedPromoCode != null) ...[
                             Container(
                               padding: const EdgeInsets.all(16),
@@ -655,7 +654,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
 
                     // Delivery Information
@@ -700,7 +699,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
                           TextFormField(
                             controller: _addressController,
                             style: const TextStyle(color: Colors.white),
@@ -735,7 +733,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             },
                           ),
                           const SizedBox(height: 16),
-                          
                           TextFormField(
                             controller: _phoneController,
                             style: const TextStyle(color: Colors.white),
@@ -767,7 +764,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             },
                           ),
                           const SizedBox(height: 16),
-                          
                           TextFormField(
                             controller: _noteController,
                             style: const TextStyle(color: Colors.white),
@@ -795,7 +791,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
 
                     // Payment Method
@@ -840,7 +836,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.05),
@@ -904,10 +899,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 32),
 
-                    // ✅ CẬP NHẬT: Place Order Button với tổng tiền cuối cùng
+                    // Place Order Button
                     Container(
                       width: double.infinity,
                       height: 55,
@@ -965,7 +960,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ),
                       ),
                     ),
-                    
                     const SizedBox(height: 20),
                   ],
                 ),

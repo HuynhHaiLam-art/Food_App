@@ -386,7 +386,7 @@ class _AdminPromotionsScreenState extends State<AdminPromotionsScreen> {
                     icon: const Icon(Icons.edit, size: 16),
                     label: const Text('Sửa'),
                     style: AdminTheme.primaryButtonStyle.copyWith(
-                      padding: MaterialStateProperty.all(
+                      padding: WidgetStateProperty.all(
                         const EdgeInsets.symmetric(vertical: 8),
                       ),
                     ),
@@ -650,7 +650,7 @@ class _AdminPromotionsScreenState extends State<AdminPromotionsScreen> {
                   );
 
                   if (isEdit) {
-                    await PromotionApiService().updatePromotion(promotion!.id!, promotionData);
+                    await PromotionApiService().updatePromotion(promotion.id!, promotionData);
                     _showSuccessSnackBar('✅ Đã cập nhật khuyến mãi');
                   } else {
                     await PromotionApiService().createPromotion(promotionData);

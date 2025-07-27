@@ -1,14 +1,72 @@
+# ==== Flutter ====
+**/build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.dart_tool/
+pubspec.lock
+
+# Gradle
+.gradle/
+gradlew
+gradlew.bat
 gradle-wrapper.jar
-/.gradle
-/captures/
-/gradlew
-/gradlew.bat
-/local.properties
+
+# Android local config
+local.properties
 GeneratedPluginRegistrant.java
 .cxx/
 
-# Remember to never publicly share your keystore.
-# See https://flutter.dev/to/reference-keystore
+# Captures
+captures/
+
+# iOS
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# macOS
+macos/Flutter/ephemeral/
+
+# Linux
+linux/flutter/
+
+# Windows
+windows/flutter/
+
+# Web
+web/.dart_tool/
+
+# ==== Keystore & Keys ====
 key.properties
-**/*.keystore
 **/*.jks
+**/*.keystore
+
+# ==== Visual Studio (Web API) ====
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ==== .NET artifacts ====
+bin/
+obj/
+*.dbmdl
+*.pdb
+*.cache
+*.log
+
+# ==== VS Code ====
+.vscode/
+.history/
+
+# ==== Misc ====
+*.iml
+*.ipr
+*.iws
+.DS_Store
+*.swp
+*.lock
+.idea/

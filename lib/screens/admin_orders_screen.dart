@@ -195,7 +195,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
             // Status Options
             ...(_statusOptions.isNotEmpty ? _statusOptions : _getDefaultStatusOptions())
                 .map((option) => _buildStatusOption(order, option))
-                .toList(),
+                ,
             
             const SizedBox(height: 20),
           ],
@@ -665,7 +665,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                       icon: const Icon(Icons.play_arrow, size: 16),
                       label: const Text('Xử lý'),
                       style: AdminTheme.primaryButtonStyle.copyWith(
-                        padding: MaterialStateProperty.all(
+                        padding: WidgetStateProperty.all(
                           const EdgeInsets.symmetric(vertical: 8),
                         ),
                       ),
@@ -679,7 +679,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                       icon: const Icon(Icons.check_circle, size: 16),
                       label: const Text('Hoàn thành'),
                       style: AdminTheme.successButtonStyle.copyWith(
-                        padding: MaterialStateProperty.all(
+                        padding: WidgetStateProperty.all(
                           const EdgeInsets.symmetric(vertical: 8),
                         ),
                       ),

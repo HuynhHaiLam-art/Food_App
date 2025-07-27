@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/favorite_provider.dart';
 import '../providers/product_provider.dart';
-import '../utils/formatters.dart';
 import '../widgets/home/background_widget.dart';
 import 'product_detail_screen.dart';
 

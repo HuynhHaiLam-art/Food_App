@@ -437,7 +437,7 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
                   );
 
                   if (isEdit) {
-                    await ProductApiService().updateProduct(product!.id!, productData, token: token);
+                    await ProductApiService().updateProduct(product.id!, productData, token: token);
                     _showSuccessSnackBar('✅ Đã cập nhật món ăn trong database');
                   } else {
                     await ProductApiService().createProduct(productData, token: token);

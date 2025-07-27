@@ -504,7 +504,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
 
                   if (isEdit) {
                     final updatedUser = User(
-                      id: user!.id,
+                      id: user.id,
                       name: nameController.text,
                       email: emailController.text,
                       role: selectedRole,

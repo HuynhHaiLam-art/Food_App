@@ -1,85 +1,125 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
+import '../models/addon.dart';
 
-class CartProvider extends ChangeNotifier {
-  final Map<Product, int> _items = {};
+class CartItem {
+  final Product product;
+  final List<AddOn> addOns;
+  int quantity;
 
-  // Getter cho items
-  Map<Product, int> get items => Map.from(_items);
-  
-  // Getter cho compatibility với code cũ
-  Map<Product, int> get cartItems => Map.from(_items);
+  CartItem({
+    required this.product,
+    this.addOns = const [],
+    this.quantity = 1,
+  });
 
-  int get itemCount => _items.values.fold(0, (sum, quantity) => sum + quantity);
-
-  double get totalPrice {
-    return _items.entries.fold(0.0, (sum, entry) {
-      final product = entry.key;
-      final quantity = entry.value;
-      return sum + ((product.price ?? 0.0) * quantity);
-    });
+  // So sánh sản phẩm và addOns để phân biệt CartItem
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is CartItem &&
+        other.product.id == product.id &&
+        _compareAddOns(other.addOns, addOns);
   }
 
-  // Lấy số lượng của sản phẩm trong giỏ hàng theo ID
+  @override
+  int get hashCode => Object.hash(product.id, _hashAddOns(addOns));
+
+  static bool _compareAddOns(List<AddOn> a, List<AddOn> b) {
+    if (a.length != b.length) return false;
+    for (final addon in a) {
+      if (!b.any((other) => other.name == addon.name && other.price == addon.price)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static int _hashAddOns(List<AddOn> addOns) {
+    return addOns.fold(0, (prev, a) => prev ^ a.name.hashCode ^ a.price.hashCode);
+  }
+
+  double get totalPrice =>
+      ((product.price ?? 0) +
+          addOns.fold<int>(0, (sum, addon) => sum + (addon.price))) *
+      quantity;
+}
+
+class CartProvider extends ChangeNotifier {
+  // Danh sách CartItem thay cho Map<Product, int> cũ.
+  final List<CartItem> _items = [];
+
+  // Đảm bảo compatibility: Map<Product, int> getter cho code cũ (không có addOns)
+  Map<Product, int> get items {
+    var map = <Product, int>{};
+    for (final item in _items) {
+      map[item.product] = (map[item.product] ?? 0) + item.quantity;
+    }
+    return map;
+  }
+
+  // Getter mới: lấy full CartItem để xử lý addOns
+  List<CartItem> get cartItems => List.unmodifiable(_items);
+
+  int get itemCount => _items.fold(0, (sum, item) => sum + item.quantity);
+
+  double get totalPrice {
+    return _items.fold(0.0, (sum, item) => sum + item.totalPrice);
+  }
+
+  // Đếm số lượng cho từng productId (bất kể addOns)
   Map<int, int> get cartCounts {
     final counts = <int, int>{};
-    for (final entry in _items.entries) {
-      final productId = entry.key.id;
+    for (final item in _items) {
+      final productId = item.product.id;
       if (productId != null) {
-        counts[productId] = entry.value;
+        counts[productId] = (counts[productId] ?? 0) + item.quantity;
       }
     }
     return counts;
   }
 
-  // Thêm sản phẩm vào giỏ hàng
-  void addToCart(Product product) {
-    if (_items.containsKey(product)) {
-      _items[product] = _items[product]! + 1;
+  // Thêm sản phẩm vào giỏ, có thể có addOns
+  void addToCart(Product product, {List<AddOn> addOns = const []}) {
+    final index = _items.indexWhere((item) =>
+        item.product.id == product.id &&
+        CartItem._compareAddOns(item.addOns, addOns));
+    if (index != -1) {
+      _items[index].quantity += 1;
     } else {
-      _items[product] = 1;
+      _items.add(CartItem(product: product, addOns: List.from(addOns), quantity: 1));
     }
     notifyListeners();
   }
 
-  // Xóa sản phẩm khỏi giỏ hàng (giảm 1 hoặc xóa hoàn toàn)
-  void removeFromCart(dynamic productOrId) {
-    if (productOrId is Product) {
-      // Truyền vào Product object
-      if (_items.containsKey(productOrId)) {
-        if (_items[productOrId]! > 1) {
-          _items[productOrId] = _items[productOrId]! - 1;
-        } else {
-          _items.remove(productOrId);
-        }
-        notifyListeners();
+  // Xóa sản phẩm khỏi giỏ (giảm 1 hoặc xóa hoàn toàn), cần truyền đúng addOns nếu có
+  void removeFromCart(Product product, {List<AddOn> addOns = const []}) {
+    final index = _items.indexWhere((item) =>
+        item.product.id == product.id &&
+        CartItem._compareAddOns(item.addOns, addOns));
+    if (index != -1) {
+      if (_items[index].quantity > 1) {
+        _items[index].quantity -= 1;
+      } else {
+        _items.removeAt(index);
       }
-    } else if (productOrId is int) {
-      // Truyền vào product ID
-      final productToRemove = _items.keys.firstWhere(
-        (product) => product.id == productOrId,
-        orElse: () => Product(), // Return empty product if not found
-      );
-      
-      if (productToRemove.id != null && _items.containsKey(productToRemove)) {
-        if (_items[productToRemove]! > 1) {
-          _items[productToRemove] = _items[productToRemove]! - 1;
-        } else {
-          _items.remove(productToRemove);
-        }
-        notifyListeners();
-      }
+      notifyListeners();
     }
   }
 
-  // Cập nhật số lượng sản phẩm
-  void updateQuantity(Product product, int quantity) {
-    if (quantity <= 0) {
-      _items.remove(product);
-    } else {
-      _items[product] = quantity;
+  // Cập nhật số lượng CartItem (theo product và addOns)
+  void updateQuantity(Product product, int quantity, {List<AddOn> addOns = const []}) {
+    final index = _items.indexWhere((item) =>
+        item.product.id == product.id &&
+        CartItem._compareAddOns(item.addOns, addOns));
+    if (index != -1) {
+      if (quantity <= 0) {
+        _items.removeAt(index);
+      } else {
+        _items[index].quantity = quantity;
+      }
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   // Xóa toàn bộ giỏ hàng

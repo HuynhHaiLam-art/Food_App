@@ -1,4 +1,5 @@
 import 'product.dart';
+import 'addon.dart';
 
 class CartItem {
   int? id;
@@ -7,6 +8,7 @@ class CartItem {
   int? quantity;
   DateTime? createdAt;
   Product? food;
+  List<AddOn> addOns;
 
   CartItem({
     this.id,
@@ -14,7 +16,7 @@ class CartItem {
     this.foodId,
     this.quantity,
     this.createdAt,
-    this.food,
+    this.food,this.addOns = const [],
   });
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,10 @@ class CartItem {
       food: json['food'] != null && json['food'] is Map<String, dynamic>
           ? Product.fromJson(json['food'] as Map<String, dynamic>)
           : null,
+      addOns: (json['addOns'] as List<dynamic>?)
+              ?.map((e) => AddOn.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],     
     );
   }
 
@@ -40,6 +46,7 @@ class CartItem {
         'foodName': food?.name,
         'quantity': quantity,
         'price': food?.price,
+        'addOns': addOns.map((e) => e.toJson()).toList(),
       };
       data.removeWhere((key, value) => value == null);
       return data;
@@ -51,6 +58,7 @@ class CartItem {
     if (quantity != null) data['quantity'] = quantity;
     if (createdAt != null) data['createdAt'] = createdAt?.toIso8601String();
     if (food != null) data['food'] = food?.toJson();
+    if (addOns.isNotEmpty) data['addOns'] = addOns.map((e) => e.toJson()).toList();
     data.removeWhere((key, value) => value == null);
     return data;
   }
@@ -62,6 +70,7 @@ class CartItem {
     int? quantity,
     DateTime? createdAt,
     Product? food,
+    List<AddOn>? addOns,
   }) {
     return CartItem(
       id: id ?? this.id,
@@ -70,11 +79,14 @@ class CartItem {
       quantity: quantity ?? this.quantity,
       createdAt: createdAt ?? this.createdAt,
       food: food ?? this.food,
+      addOns: addOns ?? this.addOns,
     );
   }
 
   // Getter tiện ích cho UI
-  double get price => (food?.price ?? 0).toDouble();
+  double get price =>
+      (food?.price ?? 0).toDouble() +
+      addOns.fold(0, (sum, a) => sum + a.price);
   String get foodName => food?.name ?? '';
   String? get imageUrl => food?.imageUrl;
   double get totalPrice => price * (quantity ?? 1);

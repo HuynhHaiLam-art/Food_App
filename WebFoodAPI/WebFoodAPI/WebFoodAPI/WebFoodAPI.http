@@ -1,0 +1,4 @@
+@WebFoodAPI_HostAddress = http://localhost:5062
+
+GET {{WebFoodAPI_HostAddress}}/api/food
+Accept: application/json

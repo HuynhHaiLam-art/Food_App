@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../widgets/home/background_widget.dart';
-import '../widgets/cart/cart_item_widget.dart'; // Sửa đường dẫn
 import 'checkout_screen.dart';
 
 class CartScreen extends StatefulWidget {
@@ -17,14 +16,10 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
       builder: (context, cartProvider, child) {
-        // Sử dụng đúng getter name từ CartProvider
-        final totalPrice = cartProvider.items.entries.fold<double>(
+        // Tính tổng tiền đúng gồm sản phẩm phụ
+        final totalPrice = cartProvider.cartItems.fold<double>(
           0.0,
-          (sum, entry) {
-            final product = entry.key;
-            final quantity = entry.value;
-            return sum + ((product.price ?? 0.0) * quantity);
-          },
+          (sum, item) => sum + item.totalPrice,
         );
 
         return BackgroundWidget(
@@ -35,7 +30,7 @@ class _CartScreenState extends State<CartScreen> {
               backgroundColor: Colors.transparent,
               elevation: 0,
             ),
-            body: cartProvider.items.isEmpty
+            body: cartProvider.cartItems.isEmpty
                 ? const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -54,21 +49,119 @@ class _CartScreenState extends State<CartScreen> {
                       Expanded(
                         child: ListView.builder(
                           padding: const EdgeInsets.all(16),
-                          itemCount: cartProvider.items.length,
+                          itemCount: cartProvider.cartItems.length,
                           itemBuilder: (context, index) {
-                            final entry = cartProvider.items.entries.elementAt(index);
-                            final product = entry.key;
-                            final quantity = entry.value;
-                            return CartItemWidget(
-                              product: product,
-                              quantity: quantity,
-                              onQuantityChanged: (newQuantity) {
-                                if (newQuantity <= 0) {
-                                  cartProvider.removeFromCart(product);
-                                } else {
-                                  cartProvider.updateQuantity(product, newQuantity);
-                                }
-                              },
+                            final cartItem = cartProvider.cartItems[index];
+                            final product = cartItem.product;
+                            final quantity = cartItem.quantity;
+                            final addOns = cartItem.addOns;
+
+                            return Card(
+                              color: Colors.white.withOpacity(0.15),
+                              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                              elevation: 2,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: product.imageUrl != null
+                                          ? Image.network(
+                                              product.imageUrl!,
+                                              width: 70,
+                                              height: 70,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (context, error, stackTrace) =>
+                                                  const Icon(Icons.broken_image, color: Colors.white54, size: 40),
+                                            )
+                                          : const Icon(Icons.fastfood, color: Colors.white54, size: 40),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            product.name ?? 'N/A',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            '${product.price?.toStringAsFixed(0) ?? "0"} VNĐ',
+                                            style: const TextStyle(color: Colors.white70, fontSize: 14),
+                                          ),
+                                          // Hiển thị tên các add-on đã tích
+                                          if (addOns.isNotEmpty)
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 4.0),
+                                              child: Text(
+                                                'Đã chọn: ${addOns.map((a) => a.name).join(", ")}',
+                                                style: const TextStyle(
+                                                  color: Colors.orange,
+                                                  fontSize: 13,
+                                                  fontStyle: FontStyle.italic,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons.remove_circle_outline, color: Colors.white),
+                                              onPressed: () {
+                                                cartProvider.removeFromCart(
+                                                  product,
+                                                  addOns: addOns,
+                                                );
+                                              },
+                                            ),
+                                            Text(
+                                              '$quantity',
+                                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+                                              onPressed: () {
+                                                cartProvider.addToCart(
+                                                  product,
+                                                  addOns: addOns,
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          // Tổng giá cho sản phẩm này (gồm add-on)
+                                          '${cartItem.totalPrice.toStringAsFixed(0)} VNĐ',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
                             );
                           },
                         ),

@@ -25,7 +25,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     currentOrder = widget.order;
   }
 
-  // ✅ Cancel order function
+  // Cancel order function
   Future<void> _cancelOrder() async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -72,7 +72,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           token: token,
         );
 
-        // Update current order status
         setState(() {
           currentOrder = currentOrder.copyWith(status: 'Cancelled');
           _isLoading = false;
@@ -118,7 +117,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     }
   }
 
-  // ✅ Helper methods for status
+  // Helper methods for status
   Color _getStatusColor(String? status) {
     switch (status?.toLowerCase()) {
       case 'pending':
@@ -156,17 +155,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     return currentOrder.status?.toLowerCase() == 'pending';
   }
 
-  // ✅ FIX: Convert dynamic orderDetails to List<OrderDetail>
+  // Convert dynamic orderDetails to List<OrderDetail>
   List<OrderDetail> _getOrderDetails() {
     if (currentOrder.orderDetails == null) return [];
-    
     return currentOrder.orderDetails!.map((detail) {
       if (detail is OrderDetail) {
         return detail;
       } else if (detail is Map<String, dynamic>) {
         return OrderDetail.fromJson(detail);
       } else {
-        // Fallback for unknown format - tạo OrderDetail từ string
+        // Fallback for unknown format
         print('⚠️ Unknown detail format: ${detail.runtimeType} - $detail');
         return OrderDetail(
           id: null,
@@ -182,12 +180,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Format currency
     final formattedAmount = currentOrder.totalAmount != null
         ? '${currentOrder.totalAmount!.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} ₫'
         : '0 ₫';
 
-    // Format date
     final formattedDate = currentOrder.orderDate != null
         ? '${currentOrder.orderDate!.day.toString().padLeft(2, '0')}/${currentOrder.orderDate!.month.toString().padLeft(2, '0')}/${currentOrder.orderDate!.year}'
         : 'N/A';
@@ -196,7 +192,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         ? '${currentOrder.orderDate!.hour.toString().padLeft(2, '0')}:${currentOrder.orderDate!.minute.toString().padLeft(2, '0')}'
         : 'N/A';
 
-    // ✅ FIX: Get properly typed order details
     final orderDetails = _getOrderDetails();
 
     return BackgroundWidget(
@@ -340,9 +335,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
               const SizedBox(height: 24),
 
-              // ✅ Cancel Order Button (chỉ hiện khi pending)
+              // Cancel Order Button
               if (_canCancelOrder()) ...[
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: _isLoading ? null : _cancelOrder,
@@ -385,7 +380,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               ),
               const SizedBox(height: 16),
 
-              // ✅ FIX: Proper order details handling
               if (orderDetails.isNotEmpty) ...[
                 ListView.separated(
                   shrinkWrap: true,
@@ -394,12 +388,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   separatorBuilder: (context, index) => const Divider(color: Colors.white24),
                   itemBuilder: (context, index) {
                     final item = orderDetails[index];
-                    
-                    // ✅ FIX: Use correct property names from OrderDetail model
                     final unitPrice = item.unitPrice ?? 0;
                     final quantity = item.quantity ?? 0;
                     final itemTotal = unitPrice * quantity;
-                    
                     final formattedUnitPrice = '${unitPrice.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} ₫';
                     final formattedItemTotal = '${itemTotal.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} ₫';
 
@@ -442,6 +433,18 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   'Đơn giá: $formattedUnitPrice',
                                   style: const TextStyle(color: Colors.white54, fontSize: 12),
                                 ),
+                                if (item.addOns != null && item.addOns!.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4.0),
+                                    child: Text(
+                                      'Sản phẩm phụ: ${item.addOns}',
+                                      style: const TextStyle(
+                                        color: Colors.orange,
+                                        fontSize: 13,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
@@ -484,7 +487,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 }
 
-// ✅ FIX: Extension với proper typing - CONVERT orderDetails TO DYNAMIC LIST
+// Extension for copyWith
 extension OrderExtension on Order {
   Order copyWith({
     int? id,
@@ -495,7 +498,7 @@ extension OrderExtension on Order {
     String? address,
     String? phone,
     String? note,
-    List<dynamic>? orderDetails, // ✅ Keep as List<dynamic> for flexibility
+    List<dynamic>? orderDetails, // Keep as List<dynamic> for flexibility
   }) {
     return Order(
       id: id ?? this.id,

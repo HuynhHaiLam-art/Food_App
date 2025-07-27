@@ -979,7 +979,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Admin Dashboard Button
               if (authProvider.isAdmin) ...[
                 const SizedBox(height: 18),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () {
